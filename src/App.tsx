@@ -1,16 +1,34 @@
-import { useState } from 'react';
-import reactLogo from './assets/react.svg';
-import { Login } from '@/pages';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+
+import { LoginPage, ReposPage, FavoritesPage, NotFoundPage } from '@/pages';
+import { authLoader, AuthProvider } from '@/providers';
 
 import '@/styles/global.scss';
 
-function App() {
-  const [count, setCount] = useState(0);
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <LoginPage />,
+    errorElement: <NotFoundPage />,
+    loader: authLoader,
+  },
+  {
+    path: 'repos',
+    element: <ReposPage />,
+    loader: authLoader,
+  },
+  {
+    path: 'favorites',
+    element: <FavoritesPage />,
+    loader: authLoader,
+  },
+]);
 
+function App() {
   return (
-    <>
-      <Login />
-    </>
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   );
 }
 

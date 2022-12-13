@@ -34,7 +34,7 @@ const Container = styled('div', {
   },
 });
 
-export const Login = () => {
+export const LoginPage = () => {
   return (
     <Box css={{ paddingY: '$6' }}>
       <Container size={{ '@initial': '1', '@bp1': '2' }}>

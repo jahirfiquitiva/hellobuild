@@ -1,7 +1,15 @@
 import type * as Stitches from '@stitches/react';
 import { createStitches } from '@stitches/react';
 
-export const { config, createTheme, css, getCssText, globalCss, styled, theme } = createStitches({
+export const {
+  config,
+  createTheme,
+  css,
+  getCssText,
+  globalCss,
+  styled,
+  theme,
+} = createStitches({
   theme: {
     fontSizes: {
       1: '12px',
@@ -38,3 +46,5 @@ export const { config, createTheme, css, getCssText, globalCss, styled, theme } 
     bp2: '(min-width: 900px)',
   },
 });
+
+export type StitchesCSS = Stitches.CSS<typeof config>;
