@@ -33,6 +33,12 @@ export const Tab = styled('button', {
     borderBottom: '2px solid var(--nc-tx-2)',
     fontWeight: '600',
   },
+  '&:hover': {
+    backgroundColor: 'var(--nc-ac-1)',
+  },
+  '&:active, &:focus': {
+    backgroundColor: 'unset',
+  }
 });
 
 export const TabContent = styled('section', {

@@ -12,6 +12,7 @@ export const Auth = () => {
       getTabChild={(index) => {
         return index === 0 ? <SignIn /> : <SignUp />;
       }}
+      initialTab={1}
     />
   );
 };
