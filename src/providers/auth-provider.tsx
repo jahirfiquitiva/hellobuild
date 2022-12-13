@@ -10,6 +10,7 @@ import { auth } from '@/lib/firebase';
 import { FC } from '@/types/fc';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
+import toast from 'react-hot-toast';
 
 interface AccountInfo {
   uid?: string;
@@ -41,6 +42,7 @@ export const AuthProvider: FC = (props) => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
       setLoading(false);
       if (userAuth) {
+        toast.dismiss('auth');
         const user: Omit<AccountInfo, 'password'> = {
           uid: userAuth.uid,
           email: userAuth.email || '',

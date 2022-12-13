@@ -4,6 +4,8 @@ import toast from 'react-hot-toast';
 import Yup from '@/lib/yup';
 import { Form, FormRow, FormField, FieldError } from './../styled';
 import { useAuth } from '@/providers';
+import { toastConfig } from '@/lib/toast';
+import { authErrorToMessage } from '@/utils/auth-error';
 
 interface SignUpFormData {
   firstName?: string;
@@ -44,14 +46,21 @@ export const SignUp = () => {
     initialValues: {},
     validationSchema: signUpFormValidation,
     onSubmit: async (values: SignUpFormData) => {
-      toast.loading('Registering user');
-      const result = await signUp?.({
+      toast.loading('Registering user', { ...toastConfig, id: 'auth' });
+      signUp?.({
         email: values.email || '',
         password: values.password || '',
         data: { firstName: values.firstName, lastName: values.lastName },
-      });
-      toast.success('User registered!');
-      console.log(result);
+      })
+        .then((result) => {
+          toast.success('User registered!', { ...toastConfig, id: 'auth' });
+        })
+        .catch((error) => {
+          toast.error(authErrorToMessage(error.code), {
+            ...toastConfig,
+            id: 'auth',
+          });
+        });
     },
   });
   const { touched, errors } = formik;

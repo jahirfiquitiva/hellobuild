@@ -27,12 +27,20 @@ export const SignIn = () => {
     initialValues: {},
     validationSchema: signInFormValidation,
     onSubmit: async (values: SignInFormData) => {
-      const result = await signIn?.({
+      toast.loading('Validating data…', { ...toastConfig, id: 'auth' });
+      await signIn?.({
         email: values.email || '',
         password: values.password || '',
-      }).catch((error) => {
-        toast.error(authErrorToMessage(error.code), toastConfig);
-      });
+      })
+        .then((result) => {
+          toast.success('Welcome back!', { ...toastConfig, id: 'auth' });
+        })
+        .catch((error) => {
+          toast.error(authErrorToMessage(error.code), {
+            ...toastConfig,
+            id: 'auth',
+          });
+        });
     },
   });
   const { touched, errors } = formik;
