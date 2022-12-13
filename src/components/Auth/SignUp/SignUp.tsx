@@ -1,7 +1,9 @@
 import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
 
 import Yup from '@/lib/yup';
 import { Form, FormRow, FormField, FieldError } from './../styled';
+import { useAuth } from '@/providers';
 
 interface SignUpFormData {
   firstName?: string;
@@ -37,11 +39,19 @@ const signUpFormValidation = Yup.object({
 });
 
 export const SignUp = () => {
+  const { signUp } = useAuth();
   const formik = useFormik<SignUpFormData>({
     initialValues: {},
     validationSchema: signUpFormValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values: SignUpFormData) => {
+      toast.loading('Registering user');
+      const result = await signUp?.({
+        email: values.email || '',
+        password: values.password || '',
+        data: { firstName: values.firstName, lastName: values.lastName },
+      });
+      toast.success('User registered!');
+      console.log(result);
     },
   });
   const { touched, errors } = formik;

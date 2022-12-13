@@ -1,34 +1,34 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
 
 import { LoginPage, ReposPage, FavoritesPage, NotFoundPage } from '@/pages';
-import { authLoader, AuthProvider } from '@/providers';
+import { withAuth } from '@/components/Auth/';
+import { withLayout } from '@/components/Layout';
 
 import '@/styles/global.scss';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <LoginPage />,
-    errorElement: <NotFoundPage />,
-    loader: authLoader,
+    element: withLayout(<LoginPage />),
+    errorElement: withLayout(<NotFoundPage />),
   },
   {
-    path: 'repos',
-    element: <ReposPage />,
-    loader: authLoader,
+    path: '/profile',
+    element: withLayout(<ReposPage />),
   },
   {
-    path: 'favorites',
-    element: <FavoritesPage />,
-    loader: authLoader,
+    path: '/favorites',
+    element: withLayout(<FavoritesPage />),
   },
 ]);
 
 function App() {
   return (
-    <AuthProvider>
+    <>
       <RouterProvider router={router} />
-    </AuthProvider>
+      <Toaster />
+    </>
   );
 }
 

@@ -1,7 +1,11 @@
 import { useFormik } from 'formik';
+import toast from 'react-hot-toast';
 
 import Yup from '@/lib/yup';
 import { Form, FormField, FieldError } from './../styled';
+import { useAuth } from '@/providers';
+import { toastConfig } from '@/lib/toast';
+import { authErrorToMessage } from '@/utils/auth-error';
 
 interface SignInFormData {
   email?: string;
@@ -18,11 +22,17 @@ const signInFormValidation = Yup.object({
 });
 
 export const SignIn = () => {
+  const { signIn } = useAuth();
   const formik = useFormik<SignInFormData>({
     initialValues: {},
     validationSchema: signInFormValidation,
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values: SignInFormData) => {
+      const result = await signIn?.({
+        email: values.email || '',
+        password: values.password || '',
+      }).catch((error) => {
+        toast.error(authErrorToMessage(error.code), toastConfig);
+      });
     },
   });
   const { touched, errors } = formik;

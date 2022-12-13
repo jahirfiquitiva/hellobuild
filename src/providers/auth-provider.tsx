@@ -1,61 +1,87 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import type {
-  AuthError,
-  AuthResponse,
-  SignUpWithPasswordCredentials,
-  Session,
-} from '@supabase/supabase-js';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  type UserCredential,
+} from 'firebase/auth';
 
-import { supabase } from '@/lib/supabase';
+import { auth } from '@/lib/firebase';
 import { FC } from '@/types/fc';
+import { useNavigate } from 'react-router-dom';
+import { Loading } from '@/components/Loading';
+
+interface AccountInfo {
+  uid?: string;
+  email: string;
+  password?: string;
+  data?: {
+    firstName?: string;
+    lastName?: string;
+  };
+}
 
 interface AuthProviderFields {
-  signUp?: (
-    credentials: SignUpWithPasswordCredentials,
-  ) => Promise<AuthResponse>;
-  signIn?: (
-    credentials: SignUpWithPasswordCredentials,
-  ) => Promise<AuthResponse>;
-  signOut?: () => Promise<{ error: AuthError | null }>;
-  session?: Session | null;
+  signUp?: (accountInfo: AccountInfo) => Promise<UserCredential>;
+  signIn?: (accountInfo: AccountInfo) => Promise<UserCredential>;
+  signOut?: () => Promise<void>;
   loading?: boolean;
+  user?: AccountInfo | null;
 }
 
 const AuthContext = createContext<AuthProviderFields>({});
 
 export const AuthProvider: FC = (props) => {
   const { children } = props;
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<AccountInfo | null>(null);
 
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setLoading(false);
-      },
-    );
-    setLoading(false);
-    return () => {
-      listener?.subscription.unsubscribe();
-    };
+    const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      setLoading(false);
+      if (userAuth) {
+        const user: Omit<AccountInfo, 'password'> = {
+          uid: userAuth.uid,
+          email: userAuth.email || '',
+        };
+        setUser(user);
+        navigate('/profile');
+      } else {
+        setUser(null);
+        navigate('/');
+      }
+    });
+    return unsubscribe;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const value: AuthProviderFields = {
-    signUp: supabase.auth.signUp,
-    signIn: supabase.auth.signInWithPassword,
-    signOut: supabase.auth.signOut,
-    session,
+    signUp: (accountInfo: AccountInfo) => {
+      return createUserWithEmailAndPassword(
+        auth,
+        accountInfo.email,
+        accountInfo.password || '',
+      );
+    },
+    signIn: (accountInfo: AccountInfo) => {
+      return signInWithEmailAndPassword(
+        auth,
+        accountInfo.email,
+        accountInfo.password || '',
+      );
+    },
+    signOut: () => {
+      return signOut(auth);
+    },
+    user,
     loading,
   };
 
+  if (loading) return <Loading />;
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
 export const useAuth = (): AuthProviderFields => {
   return useContext(AuthContext);
-};
-
-export const authLoader = async () => {
-  return supabase.auth.getSession();
 };

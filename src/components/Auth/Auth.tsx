@@ -1,4 +1,5 @@
-import { Tabs } from '@/components/Tabs/Tabs';
+import { Tabs } from '@/components/Tabs';
+
 import { SignIn } from './SignIn';
 import { SignUp } from './SignUp';
 
