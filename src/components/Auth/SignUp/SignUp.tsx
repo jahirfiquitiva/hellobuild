@@ -6,7 +6,7 @@ import { Form, FormRow, FormField, FieldError } from './../styled';
 import { useAuth } from '@/providers';
 import { toastConfig } from '@/lib/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
-import { createUserInStore } from '@/utils/data';
+import { createUserInStore } from '@/utils/firestore-operations';
 
 interface SignUpFormData {
   firstName: string;

@@ -1,6 +1,7 @@
-import type { RepositoryData } from '@/queries/repos';
-import { GitFork, Heart, Star } from 'lucide-react';
+import { GitFork, Star } from 'lucide-react';
 import { FC } from 'react';
+
+import type { RepositoryData } from '@/queries/repos';
 import {
   RepositoryCard,
   RepositoryLink,
@@ -10,8 +11,8 @@ import {
   RepositoryDescription,
   RepositoryStat,
   RepositoryLanguageIcon,
-  FavoriteButton,
 } from './styled';
+import { FavoriteToggle } from './FavoriteToggle';
 
 type RepositoryLabel =
   | 'Archived'
@@ -24,7 +25,7 @@ type RepositoryLabel =
 interface RepositoryProps {
   username: string;
   repositoryData?: RepositoryData;
-  isInFavorites?: boolean;
+  favoriteId?: string;
 }
 
 const getRepositoryLabel = (
@@ -42,15 +43,9 @@ const getRepositoryLabel = (
 };
 
 export const Repository: FC<RepositoryProps> = (props) => {
-  const { username, repositoryData, isInFavorites } = props;
+  const { username, repositoryData, favoriteId } = props;
 
   const label = getRepositoryLabel(repositoryData);
-  const favButtonTitle = isInFavorites
-    ? 'Remove repository from favorites'
-    : 'Add repository to favorites';
-  const heartIconProps = isInFavorites
-    ? { fill: 'var(--nc-tx-2)', color: 'var(--nc-tx-2)' }
-    : { color: 'var(--nc-tx-2)' };
   if (!repositoryData) return null;
   return (
     <RepositoryCard
@@ -78,9 +73,10 @@ export const Repository: FC<RepositoryProps> = (props) => {
           </RepositoryTitle>
         </RepositoryLink>
         {Boolean(label) && <RepositoryVisibility>{label}</RepositoryVisibility>}
-        <FavoriteButton title={favButtonTitle} aria-label={favButtonTitle}>
-          <Heart {...heartIconProps} />
-        </FavoriteButton>
+        <FavoriteToggle
+          repoName={repositoryData?.nameWithOwner}
+          favoriteId={favoriteId}
+        />
       </RepositoryHeader>
       <RepositoryDescription>
         {repositoryData?.description}

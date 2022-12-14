@@ -1,4 +1,4 @@
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, collection, addDoc, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 
 export const createUserInStore = async (
@@ -27,13 +27,28 @@ export const setUserGitHubToken = async (
   await setDoc(existentUserRef, { githubToken }, { merge: true });
 };
 
-export const addToFavorites = (userId: string, repoName?: string) => {
+export const addToFavorites = async (
+  userId?: string,
+  repoName?: string,
+): Promise<string | null> => {
   // Save repo to favorites subcollection
-  if (!userId || !repoName) return;
-  // TODO
+  if (!userId || !repoName) return null;
+  const docRef = await addDoc(collection(db, 'users', userId, 'favorites'), {
+    repoName,
+  });
+  return docRef.id;
 };
 
-export const removeFromFavorites = (userId: string, favoriteId?: string) => {
-  // TODO: Remove repo to favorites subcollection
-  // collection(db, 'users', user?.uid || 'x', 'favorites')
+export const removeFromFavorites = async (
+  userId?: string,
+  favoriteId?: string,
+) => {
+  // Remove repo to favorites subcollection
+  if (!userId || !favoriteId) return null;
+  try {
+    await deleteDoc(doc(db, 'users', userId, 'favorites', favoriteId));
+    return true;
+  } catch (e) {
+    return false;
+  }
 };

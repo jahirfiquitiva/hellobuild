@@ -58,9 +58,10 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
               key={repo?.nameWithOwner || repo?.name}
               username={viewer?.login || ''}
               repositoryData={repo}
-              isInFavorites={favorites.some(
-                (fav) => fav.repoName === repo?.nameWithOwner,
-              )}
+              favoriteId={
+                favorites.find((fav) => fav.repoName === repo?.nameWithOwner)
+                  ?.id
+              }
             />
           );
         })}

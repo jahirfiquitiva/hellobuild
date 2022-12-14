@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
-import { createUserInStore, setUserGitHubToken } from '@/utils/data';
+import { createUserInStore, setUserGitHubToken } from '@/utils/firestore-operations';
 import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
 import { toastConfig } from '@/lib/toast';
 
