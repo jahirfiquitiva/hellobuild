@@ -50,7 +50,7 @@ export const AuthProvider: FC = (props) => {
           email: userAuth.email || '',
         };
         setUser(user);
-        // navigate('/profile');
+        navigate('/profile');
       } else {
         setUser(null);
         navigate('/');
