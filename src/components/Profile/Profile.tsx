@@ -13,8 +13,10 @@ import {
   ProfileInfo,
   ProfileSection,
 } from './styled';
+import { useAuth } from '@/providers';
 
 export const Profile = () => {
+  const { user } = useAuth();
   const { loading, error, data } =
     useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
@@ -44,7 +46,7 @@ export const Profile = () => {
             <Photo
               src={
                 viewer?.avatarUrl ||
-                `https://unavatar.io/github/${viewer?.login}`
+                `https://unavatar.io/github/${viewer?.login}?fallback=https://unavatar.io/${user?.email}`
               }
             />
             <ProfileInfo className={'truncate'}>

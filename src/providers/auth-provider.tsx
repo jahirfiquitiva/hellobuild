@@ -13,9 +13,9 @@ import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
 import { createUserInStore, setUserGitHubToken } from '@/utils/data';
+import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
 
 interface AccountInfo {
-  uid?: string;
   email: string;
   password?: string;
   data?: {
@@ -29,36 +29,35 @@ interface AuthProviderFields {
   signIn?: (accountInfo: AccountInfo) => Promise<UserCredential>;
   signOut?: () => void;
   loading?: boolean;
-  user?: AccountInfo | null;
+  user?: UserData | null;
 }
 
 const AuthContext = createContext<AuthProviderFields>({});
 
 export const AuthProvider: FC = (props) => {
   const { children } = props;
-  const { token: githubToken, loading: githubTokenLoading } = useGitHubAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
-  const [user, setUser] = useState<AccountInfo | null>(null);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+  const userData = useFirestoreUser(userId);
+  const { token: githubToken, loading: githubTokenLoading } = useGitHubAuth(
+    userData?.githubToken,
+  );
 
   useEffect(() => {
-    setUserGitHubToken(user?.uid || '', githubToken).catch();
-  }, [user, githubToken]);
+    setUserGitHubToken(userId || '', githubToken).catch();
+  }, [userId, githubToken]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
       setLoading(false);
       if (userAuth) {
         toast.dismiss('auth');
-        const user: Omit<AccountInfo, 'password'> = {
-          uid: userAuth.uid,
-          email: userAuth.email || '',
-        };
-        setUser(user);
-        createUserInStore(user.uid || '', user.email);
+        setUserId(userAuth.uid);
+        createUserInStore(userAuth.uid, userAuth.email || '');
         if (!githubTokenLoading) navigate('/profile');
       } else {
-        setUser(null);
+        setUserId(undefined);
         navigate('/');
       }
     });
@@ -86,7 +85,7 @@ export const AuthProvider: FC = (props) => {
       signOut(auth);
       navigate('/');
     },
-    user,
+    user: userData,
     loading,
   };
 

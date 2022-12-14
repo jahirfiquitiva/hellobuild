@@ -1,10 +1,8 @@
-import { useQuery } from '@apollo/client';
 import { toast } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { toastConfig } from '@/lib/toast';
-import { setUserGitHubToken } from '@/utils/data';
 
 interface TokenResponse {
   token: {
@@ -19,12 +17,20 @@ interface HookReturnType {
   token?: string | null;
 }
 
-export const useGitHubAuth = (): HookReturnType => {
+export const useGitHubAuth = (
+  latestUserGitHubToken?: string,
+): HookReturnType => {
   const [searchParams] = useSearchParams();
   const code = searchParams?.get('code');
   const [loading, setLoading] = useState<boolean>(false);
-  const [ghAccessToken, setGitHubAccessToken] = useState<string | null>(() => {
-    return sessionStorage.getItem('gh_token');
+  const [ghAccessToken, setGitHubAccessToken] = useState<
+    string | undefined | null
+  >(() => {
+    try {
+      return sessionStorage.getItem('gh_token') || latestUserGitHubToken;
+    } catch (e) {
+      return latestUserGitHubToken;
+    }
   });
 
   useEffect(() => {
