@@ -45,10 +45,6 @@ export const removeFromFavorites = async (
 ) => {
   // Remove repo to favorites subcollection
   if (!userId || !favoriteId) return null;
-  try {
-    await deleteDoc(doc(db, 'users', userId, 'favorites', favoriteId));
-    return true;
-  } catch (e) {
-    return false;
-  }
+  await deleteDoc(doc(db, 'users', userId, 'favorites', favoriteId));
+  return true;
 };

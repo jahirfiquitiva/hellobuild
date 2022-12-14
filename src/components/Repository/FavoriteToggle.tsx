@@ -1,10 +1,14 @@
+import { Heart } from 'lucide-react';
+import { FC, useState } from 'react';
+import toast from 'react-hot-toast';
+
+import { toastConfig } from '@/lib/toast';
 import { useAuth } from '@/providers';
 import {
   addToFavorites,
   removeFromFavorites,
 } from '@/utils/firestore-operations';
-import { Heart } from 'lucide-react';
-import { FC } from 'react';
+
 import { FavoriteButton } from './styled';
 
 interface FavoriteToggleProps {
@@ -15,6 +19,7 @@ interface FavoriteToggleProps {
 export const FavoriteToggle: FC<FavoriteToggleProps> = (props) => {
   const { repoName, favoriteId } = props;
   const { user } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
 
   const favButtonTitle = favoriteId
     ? 'Remove repository from favorites'
@@ -24,15 +29,46 @@ export const FavoriteToggle: FC<FavoriteToggleProps> = (props) => {
     ? { fill: 'var(--nc-tx-2)', color: 'var(--nc-tx-2)' }
     : { color: 'var(--nc-tx-2)' };
 
-  const onButtonClicked = async () => {
+  const onButtonClicked = () => {
+    if (submitting) return;
+    setSubmitting(true);
     if (favoriteId) {
       removeFromFavorites(user?.uid, favoriteId)
-        .then((deleted) => {})
-        .catch((error) => {});
+        .then((deleted) => {
+          if (deleted)
+            toast(`Repository "${repoName}" removed from favorites`, {
+              ...toastConfig,
+              icon: '🗑️',
+            });
+          setSubmitting(false);
+        })
+        .catch((error) => {
+          toast.error(
+            error.message || 'Unexpected error. Try again in a minute',
+            toastConfig,
+          );
+          setSubmitting(false);
+        });
     } else {
       addToFavorites(user?.uid, repoName)
-        .then((favoriteId) => {})
-        .catch((error) => {});
+        .then((newFavoriteId) => {
+          if (newFavoriteId) {
+            toast(`Repository "${repoName}" added to favorites`, {
+              ...toastConfig,
+              icon: '💚',
+            });
+          } else {
+            toast.error('Unexpected error. Try again in a minute', toastConfig);
+          }
+          setSubmitting(false);
+        })
+        .catch((error) => {
+          toast.error(
+            error.message || 'Unexpected error. Try again in a minute',
+            toastConfig,
+          );
+          setSubmitting(false);
+        });
     }
   };
 
@@ -45,6 +81,7 @@ export const FavoriteToggle: FC<FavoriteToggleProps> = (props) => {
       onClick={() => {
         onButtonClicked();
       }}
+      disabled={submitting}
     >
       <Heart {...heartIconProps} />
     </FavoriteButton>
