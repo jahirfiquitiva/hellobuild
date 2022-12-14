@@ -26,12 +26,17 @@ export const useGitHubAuth = (
   const [ghAccessToken, setGitHubAccessToken] = useState<
     string | undefined | null
   >(() => {
-    try {
-      return sessionStorage.getItem('gh_token') || latestUserGitHubToken;
-    } catch (e) {
-      return latestUserGitHubToken;
-    }
+    return sessionStorage.getItem('gh_token');
   });
+
+  useEffect(() => {
+    if (!latestUserGitHubToken) return;
+    const currentToken = sessionStorage.getItem('gh_token');
+    if (currentToken !== latestUserGitHubToken) {
+      sessionStorage.setItem('gh_token', latestUserGitHubToken);
+      setGitHubAccessToken(latestUserGitHubToken);
+    }
+  }, [latestUserGitHubToken]);
 
   useEffect(() => {
     if (!code || (ghAccessToken && ghAccessToken !== 'undefined')) return;

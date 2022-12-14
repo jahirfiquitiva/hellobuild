@@ -14,6 +14,7 @@ import {
   ProfileSection,
 } from './styled';
 import { useAuth } from '@/providers';
+import { getUserPhotoUrl } from '@/utils/user-photo';
 
 export const Profile = () => {
   const { user } = useAuth();
@@ -46,7 +47,7 @@ export const Profile = () => {
             <Photo
               src={
                 viewer?.avatarUrl ||
-                `https://unavatar.io/github/${viewer?.login}?fallback=https://unavatar.io/${user?.email}`
+                getUserPhotoUrl(viewer?.login, user?.email, user?.firstName)
               }
             />
             <ProfileInfo className={'truncate'}>
