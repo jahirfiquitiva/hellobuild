@@ -17,8 +17,14 @@ export const createUserInStore = async (
   await setDoc(existentUserRef, userData, { merge: true });
 };
 
-export const setUserGitHubToken = () => {
-  // TODO: Save GitHub token in user document
+export const setUserGitHubToken = async (
+  userId: string,
+  githubToken?: string | null,
+) => {
+  if (!userId || !githubToken) return;
+  // Updates the github token for the signed in user
+  const existentUserRef = doc(db, 'users', userId);
+  await setDoc(existentUserRef, { githubToken }, { merge: true });
 };
 
 export const addToFavorites = () => {

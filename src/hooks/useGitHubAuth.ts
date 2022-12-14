@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { toastConfig } from '@/lib/toast';
+import { setUserGitHubToken } from '@/utils/data';
 
 interface TokenResponse {
   token: {

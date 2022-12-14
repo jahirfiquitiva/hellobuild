@@ -12,7 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
-import { createUserInStore } from '@/utils/data';
+import { createUserInStore, setUserGitHubToken } from '@/utils/data';
 
 interface AccountInfo {
   uid?: string;
@@ -40,6 +40,10 @@ export const AuthProvider: FC = (props) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<AccountInfo | null>(null);
+
+  useEffect(() => {
+    setUserGitHubToken(user?.uid || '', githubToken).catch();
+  }, [user, githubToken]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
