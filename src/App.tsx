@@ -1,9 +1,10 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
+import { ApolloProvider } from '@apollo/client';
 
 import { LoginPage, ReposPage, FavoritesPage, NotFoundPage } from '@/pages';
-import { withAuth } from '@/components/Auth/';
 import { withLayout } from '@/components/Layout';
+import { apolloClient } from '@/lib/apollo';
 
 import '@/styles/global.scss';
 
@@ -25,10 +26,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <>
+    <ApolloProvider client={apolloClient}>
       <RouterProvider router={router} />
       <Toaster />
-    </>
+    </ApolloProvider>
   );
 }
 

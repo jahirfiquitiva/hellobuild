@@ -11,6 +11,7 @@ import { FC } from '@/types/fc';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
+import { useGitHubAuth } from '@/hooks/useGitHubAuth';
 
 interface AccountInfo {
   uid?: string;
@@ -34,6 +35,7 @@ const AuthContext = createContext<AuthProviderFields>({});
 
 export const AuthProvider: FC = (props) => {
   const { children } = props;
+  const githubToken = useGitHubAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<AccountInfo | null>(null);
@@ -48,7 +50,7 @@ export const AuthProvider: FC = (props) => {
           email: userAuth.email || '',
         };
         setUser(user);
-        navigate('/profile');
+        // navigate('/profile');
       } else {
         setUser(null);
         navigate('/');
