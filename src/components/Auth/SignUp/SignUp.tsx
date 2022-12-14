@@ -6,12 +6,13 @@ import { Form, FormRow, FormField, FieldError } from './../styled';
 import { useAuth } from '@/providers';
 import { toastConfig } from '@/lib/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
+import { createUserInStore } from '@/utils/data';
 
 interface SignUpFormData {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  password?: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
 }
 
 const signUpFormValidation = Yup.object({
@@ -43,7 +44,7 @@ const signUpFormValidation = Yup.object({
 export const SignUp = () => {
   const { signUp } = useAuth();
   const formik = useFormik<SignUpFormData>({
-    initialValues: {},
+    initialValues: { firstName: '', lastName: '', email: '', password: '' },
     validationSchema: signUpFormValidation,
     onSubmit: async (values: SignUpFormData) => {
       toast.loading('Registering user', { ...toastConfig, id: 'auth' });
@@ -53,6 +54,12 @@ export const SignUp = () => {
         data: { firstName: values.firstName, lastName: values.lastName },
       })
         .then((result) => {
+          createUserInStore(
+            result.user.uid,
+            values.email,
+            values.firstName,
+            values.lastName,
+          );
           toast.success('User registered!', { ...toastConfig, id: 'auth' });
         })
         .catch((error) => {

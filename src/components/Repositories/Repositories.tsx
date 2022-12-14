@@ -21,12 +21,12 @@ export const Repositories = () => {
   if (loading) return <Loading />;
   if (error || !viewer)
     return <small>{error?.message || 'Data not found at this time'}</small>;
-  console.log(repositories);
   return (
     <RepositoriesGrid>
       {repositories.map((repo, index) => {
         return (
           <Repository
+            key={repo?.nameWithOwner || repo?.name}
             username={viewer?.login || ''}
             repositoryData={repo}
             isInFavorites={index % 2 === 0}

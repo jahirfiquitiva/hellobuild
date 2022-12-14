@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
+import { createUserInStore } from '@/utils/data';
 
 interface AccountInfo {
   uid?: string;
@@ -26,7 +27,7 @@ interface AccountInfo {
 interface AuthProviderFields {
   signUp?: (accountInfo: AccountInfo) => Promise<UserCredential>;
   signIn?: (accountInfo: AccountInfo) => Promise<UserCredential>;
-  signOut?: () => Promise<void>;
+  signOut?: () => void;
   loading?: boolean;
   user?: AccountInfo | null;
 }
@@ -50,6 +51,7 @@ export const AuthProvider: FC = (props) => {
           email: userAuth.email || '',
         };
         setUser(user);
+        createUserInStore(user.uid || '', user.email);
         if (!githubTokenLoading) navigate('/profile');
       } else {
         setUser(null);
@@ -76,7 +78,9 @@ export const AuthProvider: FC = (props) => {
       );
     },
     signOut: () => {
-      return signOut(auth);
+      sessionStorage.setItem('gh_token', '');
+      signOut(auth);
+      navigate('/');
     },
     user,
     loading,

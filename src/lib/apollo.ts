@@ -1,4 +1,9 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import {
+  ApolloClient,
+  createHttpLink,
+  InMemoryCache,
+  defaultDataIdFromObject,
+} from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 
 const httpLink = createHttpLink({
@@ -19,5 +24,14 @@ const authLink = setContext((_, { headers }) => {
 
 export const apolloClient = new ApolloClient({
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    dataIdFromObject(responseObject) {
+      switch (responseObject.__typename) {
+        case 'User':
+          return `User:${responseObject.login}`;
+        default:
+          return defaultDataIdFromObject(responseObject);
+      }
+    },
+  }),
 });

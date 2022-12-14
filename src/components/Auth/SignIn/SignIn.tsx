@@ -6,10 +6,11 @@ import { Form, FormField, FieldError } from './../styled';
 import { useAuth } from '@/providers';
 import { toastConfig } from '@/lib/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
+import { createUserInStore } from '@/utils/data';
 
 interface SignInFormData {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 }
 
 const signInFormValidation = Yup.object({
@@ -24,7 +25,7 @@ const signInFormValidation = Yup.object({
 export const SignIn = () => {
   const { signIn } = useAuth();
   const formik = useFormik<SignInFormData>({
-    initialValues: {},
+    initialValues: { email: '', password: '' },
     validationSchema: signInFormValidation,
     onSubmit: async (values: SignInFormData) => {
       toast.loading('Validating data…', { ...toastConfig, id: 'auth' });
@@ -33,6 +34,7 @@ export const SignIn = () => {
         password: values.password || '',
       })
         .then((result) => {
+          createUserInStore(result.user.uid, values.email || '');
           toast.success('Welcome back!', { ...toastConfig, id: 'auth' });
         })
         .catch((error) => {
