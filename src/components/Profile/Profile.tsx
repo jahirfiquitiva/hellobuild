@@ -1,8 +1,9 @@
 import { useQuery } from '@apollo/client';
+import { Github } from 'lucide-react';
 
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import { Loading } from '../Loading';
-import { Photo } from './styled';
+import { ConnectGitHub, Photo } from './styled';
 
 export const Profile = () => {
   const { loading, error, data } =
@@ -12,17 +13,25 @@ export const Profile = () => {
   if (loading) return <Loading />;
 
   return (
-    <div>
+    <>
+      <h1>Profile</h1>
       {error ? (
-        <a
-          href={`https://github.com/login/oauth/authorize?client_id=Iv1.8aae692ae0ec6ccf&redirect_uri=${encodeURI(
-            `${window?.location?.origin || ''}?authorized=true`,
-          )}`}
-        >
-          Connect to GitHub
-        </a>
+        <>
+          <p>
+            In order to retrieve your profile data and repositories list, you
+            must connect your GitHub account.
+          </p>
+          <ConnectGitHub
+            href={`https://github.com/login/oauth/authorize?client_id=Iv1.8aae692ae0ec6ccf&redirect_uri=${encodeURI(
+              `${window?.location?.origin || ''}?authorized=true`,
+            )}`}
+          >
+            <Github />
+            <span>Connect to GitHub</span>
+          </ConnectGitHub>
+        </>
       ) : (
-        <div>
+        <section id={'profile'}>
           <Photo
             src={
               viewer?.avatarUrl || `https://unavatar.io/github/${viewer?.login}`
@@ -31,8 +40,8 @@ export const Profile = () => {
             height={96}
           />
           <p>{viewer?.name}</p>
-        </div>
+        </section>
       )}
-    </div>
+    </>
   );
 };
