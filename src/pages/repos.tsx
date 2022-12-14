@@ -6,7 +6,6 @@ export const ReposPage: FC = () => {
   return (
     <>
       <Profile />
-      <h2>Repositories</h2>
       <Repositories />
     </>
   );

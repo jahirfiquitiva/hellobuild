@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 
 import {
@@ -5,12 +6,24 @@ import {
   RepositoriesQueryResult,
   RepositoryData,
 } from '@/queries/repos';
+import { useAuth } from '@/providers';
+import { useGitHubAuth } from '@/hooks/useGitHubAuth';
+
 import { Loading } from '../Loading';
 import { Repository } from '../Repository';
 import { RepositoriesGrid } from './styled';
+import { FC } from '@/types/fc';
 
-export const Repositories = () => {
-  const { loading, error, data } =
+interface RepositoriesProps {
+  isFavoritesList?: boolean;
+}
+
+export const Repositories: FC<RepositoriesProps> = (props) => {
+  const { isFavoritesList } = props;
+  const { user } = useAuth();
+  const { token: githubToken } = useGitHubAuth(user?.githubToken);
+
+  const { loading, error, data, refetch } =
     useQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
   const repositories: Array<RepositoryData> =
@@ -18,21 +31,29 @@ export const Repositories = () => {
       ?.filter((it) => Boolean(it?.node))
       .map((item) => ({ ...(item.node as RepositoryData) })) || [];
 
-  if (loading) return <Loading />;
-  if (error || !viewer)
+  useEffect(() => {
+    refetch?.();
+  }, [githubToken, refetch]);
+
+  if (loading && isFavoritesList) return <Loading />;
+  if (!loading && (error || !viewer))
     return <small>{error?.message || 'Data not found at this time'}</small>;
+  if (!repositories || !repositories.length) return null;
   return (
-    <RepositoriesGrid>
-      {repositories.map((repo, index) => {
-        return (
-          <Repository
-            key={repo?.nameWithOwner || repo?.name}
-            username={viewer?.login || ''}
-            repositoryData={repo}
-            isInFavorites={index % 2 === 0}
-          />
-        );
-      })}
-    </RepositoriesGrid>
+    <>
+      <h2>{isFavoritesList ? 'Favorites' : 'Repositories'}</h2>
+      <RepositoriesGrid>
+        {repositories.map((repo, index) => {
+          return (
+            <Repository
+              key={repo?.nameWithOwner || repo?.name}
+              username={viewer?.login || ''}
+              repositoryData={repo}
+              isInFavorites={index % 2 === 0}
+            />
+          );
+        })}
+      </RepositoriesGrid>
+    </>
   );
 };

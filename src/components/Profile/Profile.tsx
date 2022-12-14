@@ -15,12 +15,19 @@ import {
 } from './styled';
 import { useAuth } from '@/providers';
 import { getUserPhotoUrl } from '@/utils/user-photo';
+import { useGitHubAuth } from '@/hooks/useGitHubAuth';
+import { useEffect } from 'react';
 
 export const Profile = () => {
   const { user } = useAuth();
-  const { loading, error, data } =
+  const { token: githubToken } = useGitHubAuth(user?.githubToken);
+  const { loading, error, data, refetch } =
     useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
+
+  useEffect(() => {
+    refetch?.();
+  }, [githubToken, refetch]);
 
   if (loading) return <Loading />;
   return (
