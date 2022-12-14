@@ -27,10 +27,13 @@ export const setUserGitHubToken = async (
   await setDoc(existentUserRef, { githubToken }, { merge: true });
 };
 
-export const addToFavorites = () => {
-  // TODO: Save repo to favorites subcollection
+export const addToFavorites = (userId: string, repoName?: string) => {
+  // Save repo to favorites subcollection
+  if (!userId || !repoName) return;
+  // TODO
 };
 
-export const removeFromFavorites = () => {
+export const removeFromFavorites = (userId: string, favoriteId?: string) => {
   // TODO: Remove repo to favorites subcollection
+  // collection(db, 'users', user?.uid || 'x', 'favorites')
 };

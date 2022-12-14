@@ -1,5 +1,6 @@
+import { Repositories } from '@/components/Repositories';
 import type { FC } from 'react';
 
 export const FavoritesPage: FC = () => {
-  return <h1>Favorites</h1>;
+  return <Repositories isFavoritesList />;
 };

@@ -25,7 +25,6 @@ interface RepositoryProps {
   username: string;
   repositoryData?: RepositoryData;
   isInFavorites?: boolean;
-  onFavoriteClicked?: (addToFavorites?: boolean) => void;
 }
 
 const getRepositoryLabel = (

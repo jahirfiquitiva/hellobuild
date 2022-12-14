@@ -33,7 +33,7 @@ export const Profile = () => {
   return (
     <>
       <h1>Profile</h1>
-      {error || !viewer ? (
+      {(error || !viewer) && !loading ? (
         <>
           <p>
             In order to retrieve your profile data and repositories list, you

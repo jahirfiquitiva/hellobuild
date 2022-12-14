@@ -13,6 +13,7 @@ import { Loading } from '../Loading';
 import { Repository } from '../Repository';
 import { RepositoriesGrid } from './styled';
 import { FC } from '@/types/fc';
+import { useFavorites } from '@/hooks/useFavorites';
 
 interface RepositoriesProps {
   isFavoritesList?: boolean;
@@ -23,13 +24,19 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   const { user } = useAuth();
   const { token: githubToken } = useGitHubAuth(user?.githubToken);
 
+  const favorites = useFavorites();
+
   const { loading, data, refetch } =
     useQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
-  const repositories: Array<RepositoryData> =
-    viewer?.repositories?.edges
-      ?.filter((it) => Boolean(it?.node))
-      .map((item) => ({ ...(item.node as RepositoryData) })) || [];
+  const repositories: Array<RepositoryData> = (
+    viewer?.repositories?.edges?.map((item) => ({
+      ...(item.node as RepositoryData),
+    })) || []
+  )?.filter((item) => {
+    if (!isFavoritesList) return true;
+    return favorites.some((fav) => fav.repoName === item?.nameWithOwner);
+  });
 
   useEffect(() => {
     refetch?.();
@@ -39,7 +46,11 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   if (!repositories || !repositories.length) return null;
   return (
     <>
-      <h2>{isFavoritesList ? 'Favorites' : 'Repositories'}</h2>
+      <h2>
+        {isFavoritesList
+          ? `Favorites (${favorites.length})`
+          : `Repositories (${repositories.length})`}
+      </h2>
       <RepositoriesGrid>
         {repositories.map((repo, index) => {
           return (
@@ -47,7 +58,9 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
               key={repo?.nameWithOwner || repo?.name}
               username={viewer?.login || ''}
               repositoryData={repo}
-              isInFavorites={index % 2 === 0}
+              isInFavorites={favorites.some(
+                (fav) => fav.repoName === repo?.nameWithOwner,
+              )}
             />
           );
         })}
