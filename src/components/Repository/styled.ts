@@ -1,7 +1,6 @@
 import { styled } from '~/stitches';
 
 export const RepositoryCard = styled('div', {
-  borderRadius: '.5rem',
   display: 'flex',
   flexDirection: 'column',
   gap: '.5rem',
