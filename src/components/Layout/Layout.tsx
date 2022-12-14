@@ -7,12 +7,13 @@ import { useAuth } from '@/providers';
 
 export const Layout: FC = (props) => {
   const { children } = props;
-  const { user, loading, signOut } = useAuth();
+  const { user, signOut } = useAuth();
+  const { uid } = user || {};
   return (
     <>
       <Header>
         <Navigation>
-          {user ? (
+          {uid ? (
             <div>
               <img
                 src={`https://unavatar.io/${user?.email}`}
@@ -25,7 +26,7 @@ export const Layout: FC = (props) => {
             <h1>HelloBuild</h1>
           )}
           <ul>
-            {user ? (
+            {uid ? (
               <>
                 <li>
                   <Link to={'/profile'}>Profile</Link>
@@ -34,7 +35,13 @@ export const Layout: FC = (props) => {
                   <Link to={'/favorites'}>Favorites</Link>
                 </li>
                 <li>
-                  <button onClick={() => {signOut?.()}}>Sign Out</button>
+                  <button
+                    onClick={() => {
+                      signOut?.();
+                    }}
+                  >
+                    Sign Out
+                  </button>
                 </li>
               </>
             ) : (
