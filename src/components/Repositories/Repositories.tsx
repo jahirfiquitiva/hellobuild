@@ -23,7 +23,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   const { user } = useAuth();
   const { token: githubToken } = useGitHubAuth(user?.githubToken);
 
-  const { loading, error, data, refetch } =
+  const { loading, data, refetch } =
     useQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
   const repositories: Array<RepositoryData> =
@@ -36,8 +36,6 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   }, [githubToken, refetch]);
 
   if (loading && isFavoritesList) return <Loading />;
-  if (!loading && (error || !viewer))
-    return <small>{error?.message || 'Data not found at this time'}</small>;
   if (!repositories || !repositories.length) return null;
   return (
     <>
