@@ -13,7 +13,6 @@ export const RepositoryCard = styled('div', {
 });
 
 export const RepositoryLink = styled('a', {
-  flex: 1,
   color: 'inherit',
   textDecoration: 'none',
   transition: 'all .25s ease-in-out',

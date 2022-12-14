@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import Yup from '@/lib/yup';
 import { Form, FormField, FieldError } from './../styled';
 import { useAuth } from '@/providers';
-import { toastConfig } from '@/lib/toast';
+import { toastConfig } from '@/utils/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
 import { createUserInStore } from '@/utils/firestore-operations';
 

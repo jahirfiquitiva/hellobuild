@@ -60,7 +60,7 @@ export const Repository: FC<RepositoryProps> = (props) => {
           : undefined
       }
     >
-      <RepositoryHeader>
+      <RepositoryHeader css={{ justifyContent: 'space-between' }}>
         <RepositoryLink
           href={`https://github.com/${repositoryData?.nameWithOwner}`}
           rel={'noopener noreferrer'}
@@ -72,11 +72,15 @@ export const Repository: FC<RepositoryProps> = (props) => {
               : repositoryData?.nameWithOwner}
           </RepositoryTitle>
         </RepositoryLink>
-        {Boolean(label) && <RepositoryVisibility>{label}</RepositoryVisibility>}
-        <FavoriteToggle
-          repoName={repositoryData?.nameWithOwner}
-          favoriteId={favoriteId}
-        />
+        <RepositoryHeader>
+          {Boolean(label) && (
+            <RepositoryVisibility>{label}</RepositoryVisibility>
+          )}
+          <FavoriteToggle
+            repoName={repositoryData?.nameWithOwner}
+            favoriteId={favoriteId}
+          />
+        </RepositoryHeader>
       </RepositoryHeader>
       <RepositoryDescription>
         {repositoryData?.description}

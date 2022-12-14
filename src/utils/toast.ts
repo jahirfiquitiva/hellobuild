@@ -12,7 +12,7 @@ export const toastConfig: ToastOptions = {
     backdropFilter: 'blur(8px)',
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    '& > div:first-child': {
+    '& > div:firstChild': {
       fontSize: '1.35rem',
     },
   },

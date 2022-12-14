@@ -69,8 +69,25 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
       <h2>
         {isFavoritesList
           ? `Favorites (${favorites.length})`
-          : `Repositories (${viewer?.repositories?.edges?.length})`}
+          : `Repositories (${viewer?.repositories?.totalCount})`}
       </h2>
+      {(viewer?.repositories?.totalCount || 0) > 100 && !isFavoritesList && (
+        <small>
+          <strong>Disclaimer:</strong>
+          <br />
+          Only your 100 most recently updated repositories are shown.
+          <br />
+          Although you have contributed to a total of{' '}
+          <a
+            href={`https://github.com/${viewer?.login}?tab=repositories`}
+            rel={'noopener noreferrer'}
+            target={'_blank'}
+          >
+            {viewer?.repositories?.totalCount || 0} repositories
+          </a>
+          . Impressive! 🎉
+        </small>
+      )}
       <RepositoriesSearchContainer>
         <RepositoriesSearchLabel htmlFor={'search'}>
           Search repository
@@ -85,7 +102,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
         <RepositoriesSearchIcon />
       </RepositoriesSearchContainer>
       <RepositoriesGrid>
-        {repositories.map((repo, index) => {
+        {repositories.map((repo) => {
           return (
             <Repository
               key={repo?.nameWithOwner || repo?.name}

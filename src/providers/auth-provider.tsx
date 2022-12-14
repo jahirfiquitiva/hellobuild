@@ -14,7 +14,7 @@ import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
 import { createUserInStore, setUserGitHubToken } from '@/utils/firestore-operations';
 import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
-import { toastConfig } from '@/lib/toast';
+import { toastConfig } from '@/utils/toast';
 
 interface AccountInfo {
   email: string;

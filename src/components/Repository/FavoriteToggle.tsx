@@ -2,7 +2,7 @@ import { Heart } from 'lucide-react';
 import { FC, useState } from 'react';
 import toast from 'react-hot-toast';
 
-import { toastConfig } from '@/lib/toast';
+import { toastConfig } from '@/utils/toast';
 import { useAuth } from '@/providers';
 import {
   addToFavorites,

@@ -2,7 +2,7 @@ import { toast } from 'react-hot-toast';
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-import { toastConfig } from '@/lib/toast';
+import { toastConfig } from '@/utils/toast';
 
 interface TokenResponse {
   token: {

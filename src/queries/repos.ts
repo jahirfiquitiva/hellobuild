@@ -21,6 +21,7 @@ export interface RepositoriesQueryResult {
   viewer?: {
     login: string;
     repositories?: {
+      totalCount?: number
       edges?: Array<{
         node?: RepositoryData;
       }>;
@@ -36,6 +37,7 @@ export const GET_REPOS_QUERY = gql`
         first: 100
         orderBy: { field: UPDATED_AT, direction: DESC }
       ) {
+        totalCount
         edges {
           node {
             name
