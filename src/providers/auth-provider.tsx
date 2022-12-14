@@ -14,6 +14,7 @@ import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
 import { createUserInStore, setUserGitHubToken } from '@/utils/data';
 import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
+import { toastConfig } from '@/lib/toast';
 
 interface AccountInfo {
   email: string;
@@ -58,7 +59,15 @@ export const AuthProvider: FC = (props) => {
         if (!githubTokenLoading) navigate('/profile');
       } else {
         setUserId(undefined);
-        navigate('/');
+        const { pathname } = window.location;
+        // Only redirect to home page when in these sites which require authentication
+        if (pathname.endsWith('profile') || pathname.endsWith('favorites')) {
+          toast.error('Authentication required', {
+            ...toastConfig,
+            id: 'auth',
+          });
+          navigate('/');
+        }
       }
     });
     return unsubscribe;
