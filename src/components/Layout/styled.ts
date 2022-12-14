@@ -5,9 +5,7 @@ export const Main = styled('main', {
   flexDirection: 'column'
 })
 
-export const Header = styled('header', {
-  borderBottom: '1px solid var(--nc-tx-3)',
-})
+export const Header = styled('header', {})
 
 export const Navigation = styled('nav', {
 

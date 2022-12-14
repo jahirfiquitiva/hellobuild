@@ -42,8 +42,8 @@ export const {
     }),
   },
   media: {
-    bp1: '(min-width: 520px)',
-    bp2: '(min-width: 900px)',
+    tablet: '(min-width: 540px)',
+    desktop: '(min-width: 960px)',
   },
 });
 

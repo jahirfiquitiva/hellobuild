@@ -35,7 +35,7 @@ const AuthContext = createContext<AuthProviderFields>({});
 
 export const AuthProvider: FC = (props) => {
   const { children } = props;
-  const githubToken = useGitHubAuth();
+  const { token: githubToken, loading: githubTokenLoading } = useGitHubAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [user, setUser] = useState<AccountInfo | null>(null);
@@ -50,7 +50,7 @@ export const AuthProvider: FC = (props) => {
           email: userAuth.email || '',
         };
         setUser(user);
-        navigate('/profile');
+        if (!githubTokenLoading) navigate('/profile');
       } else {
         setUser(null);
         navigate('/');
@@ -58,7 +58,7 @@ export const AuthProvider: FC = (props) => {
     });
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [githubTokenLoading]);
 
   const value: AuthProviderFields = {
     signUp: (accountInfo: AccountInfo) => {

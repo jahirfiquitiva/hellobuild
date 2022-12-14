@@ -14,18 +14,21 @@ interface TokenResponse {
 }
 
 interface HookReturnType {
+  loading?: boolean;
   token?: string | null;
 }
 
 export const useGitHubAuth = (): HookReturnType => {
   const [searchParams] = useSearchParams();
   const code = searchParams?.get('code');
+  const [loading, setLoading] = useState<boolean>(false);
   const [ghAccessToken, setGitHubAccessToken] = useState<string | null>(() => {
     return sessionStorage.getItem('gh_token');
   });
 
   useEffect(() => {
     if (!code || (ghAccessToken && ghAccessToken !== 'undefined')) return;
+    setLoading(true);
     fetch(`https://hellobuild-back.jahir.dev/token?code=${code}`, {
       method: 'GET',
       headers: {
@@ -40,12 +43,14 @@ export const useGitHubAuth = (): HookReturnType => {
           sessionStorage.setItem('gh_token', responseToken || '');
           setGitHubAccessToken(responseToken || null);
         }
+        setLoading(false);
       })
       .catch((error) => {
         console.error(error);
         toast.error(error.message, toastConfig);
+        setLoading(false);
       });
   }, [code, ghAccessToken]);
 
-  return { token: ghAccessToken };
+  return { token: ghAccessToken, loading };
 };

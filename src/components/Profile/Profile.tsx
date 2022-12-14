@@ -1,9 +1,18 @@
 import { useQuery } from '@apollo/client';
-import { Github } from 'lucide-react';
+import { AtSign, Github, Globe, Users } from 'lucide-react';
 
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import { Loading } from '../Loading';
-import { ConnectGitHub, Photo } from './styled';
+import {
+  ConnectGitHub,
+  FollowersFollowing,
+  FollowersFollowingLink,
+  IconLink,
+  Photo,
+  PhotoAndInfo,
+  ProfileInfo,
+  ProfileSection,
+} from './styled';
 
 export const Profile = () => {
   const { loading, error, data } =
@@ -11,11 +20,10 @@ export const Profile = () => {
   const { viewer } = data || {};
 
   if (loading) return <Loading />;
-
   return (
     <>
       <h1>Profile</h1>
-      {error ? (
+      {error || !viewer ? (
         <>
           <p>
             In order to retrieve your profile data and repositories list, you
@@ -31,16 +39,62 @@ export const Profile = () => {
           </ConnectGitHub>
         </>
       ) : (
-        <section id={'profile'}>
-          <Photo
-            src={
-              viewer?.avatarUrl || `https://unavatar.io/github/${viewer?.login}`
-            }
-            width={96}
-            height={96}
-          />
-          <p>{viewer?.name}</p>
-        </section>
+        <ProfileSection id={'profile'}>
+          <PhotoAndInfo>
+            <Photo
+              src={
+                viewer?.avatarUrl ||
+                `https://unavatar.io/github/${viewer?.login}`
+              }
+            />
+            <ProfileInfo className={'truncate'}>
+              <strong>{viewer?.name}</strong>
+              <IconLink
+                href={`https://github.com/${viewer?.login}`}
+                rel={'noopener noreferrer'}
+                target={'_blank'}
+              >
+                <AtSign size={20} />
+                <span>{viewer?.login}</span>
+              </IconLink>
+              {Boolean(viewer?.websiteUrl) && (
+                <IconLink
+                  href={viewer?.websiteUrl}
+                  rel={'noopener noreferrer'}
+                  target={'_blank'}
+                >
+                  <Globe size={20} />
+                  <span>{viewer?.websiteUrl}</span>
+                </IconLink>
+              )}
+            </ProfileInfo>
+          </PhotoAndInfo>
+          <ProfileInfo>
+            <p>{viewer?.bio}</p>
+            <FollowersFollowing>
+              <Users size={16} />
+              <span>
+                <FollowersFollowingLink
+                  href={`https://github.com/${viewer?.login}?tab=followers`}
+                  rel={'noopener noreferrer'}
+                  target={'_blank'}
+                >
+                  {viewer?.followers?.totalCount} Followers
+                </FollowersFollowingLink>
+              </span>
+              <span> • </span>
+              <span>
+                <FollowersFollowingLink
+                  href={`https://github.com/${viewer?.login}?tab=following`}
+                  rel={'noopener noreferrer'}
+                  target={'_blank'}
+                >
+                  {viewer?.following?.totalCount} Following
+                </FollowersFollowingLink>
+              </span>
+            </FollowersFollowing>
+          </ProfileInfo>
+        </ProfileSection>
       )}
     </>
   );
