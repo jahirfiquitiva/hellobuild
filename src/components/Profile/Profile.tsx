@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import { Loading } from '../Loading';
+import { Photo } from './styled';
 
 export const Profile = () => {
   const { loading, error, data } =
@@ -21,7 +22,16 @@ export const Profile = () => {
           Connect to GitHub
         </a>
       ) : (
-        <div>{viewer?.name}</div>
+        <div>
+          <Photo
+            src={
+              viewer?.avatarUrl || `https://unavatar.io/github/${viewer?.login}`
+            }
+            width={96}
+            height={96}
+          />
+          <p>{viewer?.name}</p>
+        </div>
       )}
     </div>
   );
