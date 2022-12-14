@@ -11,14 +11,18 @@ export const Form = styled('form', {
 
 export const FormRow = styled('div', {
   display: 'flex',
-  flexDirection: 'row',
+  flexDirection: 'column',
   alignItems: 'flex-start',
   gap: '1rem',
+  '@tablet': {
+    flexDirection: 'row',
+  },
 });
 
 export const FormField = styled('div', {
   display: 'flex',
   flexDirection: 'column',
+  width: '100%',
   flex: 1,
   gap: '.35rem',
   '& input': {
