@@ -18,9 +18,9 @@ export const Repositories = () => {
       ?.filter((it) => Boolean(it?.node))
       .map((item) => ({ ...(item.node as RepositoryData) })) || [];
 
+  if (loading) return <Loading />;
   if (error || !viewer)
     return <small>{error?.message || 'Data not found at this time'}</small>;
-  if (loading) return <Loading />;
   console.log(repositories);
   return (
     <RepositoriesGrid>
