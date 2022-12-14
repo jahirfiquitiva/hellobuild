@@ -24,9 +24,13 @@ export const Repositories = () => {
   console.log(repositories);
   return (
     <RepositoriesGrid>
-      {repositories.map((repo) => {
+      {repositories.map((repo, index) => {
         return (
-          <Repository username={viewer?.login || ''} repositoryData={repo} />
+          <Repository
+            username={viewer?.login || ''}
+            repositoryData={repo}
+            isInFavorites={index % 2 === 0}
+          />
         );
       })}
     </RepositoriesGrid>

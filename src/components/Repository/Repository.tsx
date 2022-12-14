@@ -1,7 +1,8 @@
 import type { RepositoryData } from '@/queries/repos';
-import { GitFork, Star } from 'lucide-react';
+import { GitFork, Heart, Star } from 'lucide-react';
 import { FC } from 'react';
 import {
+  RepositoryCard,
   RepositoryLink,
   RepositoryHeader,
   RepositoryTitle,
@@ -9,6 +10,7 @@ import {
   RepositoryDescription,
   RepositoryStat,
   RepositoryLanguageIcon,
+  FavoriteButton,
 } from './styled';
 
 type RepositoryLabel =
@@ -22,6 +24,8 @@ type RepositoryLabel =
 interface RepositoryProps {
   username: string;
   repositoryData?: RepositoryData;
+  isInFavorites?: boolean;
+  onFavoriteClicked?: (addToFavorites?: boolean) => void;
 }
 
 const getRepositoryLabel = (
@@ -39,13 +43,18 @@ const getRepositoryLabel = (
 };
 
 export const Repository: FC<RepositoryProps> = (props) => {
-  const { username, repositoryData } = props;
+  const { username, repositoryData, isInFavorites } = props;
 
   const label = getRepositoryLabel(repositoryData);
+  const favButtonTitle = isInFavorites
+    ? 'Remove repository from favorites'
+    : 'Add repository to favorites';
+  const heartIconProps = isInFavorites
+    ? { fill: 'var(--nc-tx-2)', color: 'var(--nc-tx-2)' }
+    : { color: 'var(--nc-tx-2)' };
   if (!repositoryData) return null;
   return (
-    <RepositoryLink
-      href={`https://github.com/${repositoryData?.nameWithOwner}`}
+    <RepositoryCard
       css={
         repositoryData?.primaryLanguage?.color
           ? {
@@ -58,12 +67,21 @@ export const Repository: FC<RepositoryProps> = (props) => {
       }
     >
       <RepositoryHeader>
-        <RepositoryTitle>
-          {repositoryData?.nameWithOwner.startsWith(username)
-            ? repositoryData?.name
-            : repositoryData?.nameWithOwner}
-        </RepositoryTitle>
+        <RepositoryLink
+          href={`https://github.com/${repositoryData?.nameWithOwner}`}
+          rel={'noopener noreferrer'}
+          target={'_blank'}
+        >
+          <RepositoryTitle>
+            {repositoryData?.nameWithOwner.startsWith(username)
+              ? repositoryData?.name
+              : repositoryData?.nameWithOwner}
+          </RepositoryTitle>
+        </RepositoryLink>
         {Boolean(label) && <RepositoryVisibility>{label}</RepositoryVisibility>}
+        <FavoriteButton title={favButtonTitle} aria-label={favButtonTitle}>
+          <Heart {...heartIconProps} />
+        </FavoriteButton>
       </RepositoryHeader>
       <RepositoryDescription>
         {repositoryData?.description}
@@ -90,6 +108,6 @@ export const Repository: FC<RepositoryProps> = (props) => {
           </RepositoryStat>
         )}
       </RepositoryHeader>
-    </RepositoryLink>
+    </RepositoryCard>
   );
 };

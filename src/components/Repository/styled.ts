@@ -1,18 +1,25 @@
 import { styled } from '~/stitches';
 
-export const RepositoryLink = styled('a', {
+export const RepositoryCard = styled('div', {
+  borderRadius: '.5rem',
   display: 'flex',
   flexDirection: 'column',
   gap: '.5rem',
-  padding: '.85rem 1rem',
+  padding: '.5rem .5rem 1rem 1rem',
   border: '1px solid var(--nc-bg-3)',
   borderRadius: '.5rem',
   color: 'inherit',
   textDecoration: 'none',
   transition: 'all .25s ease-in-out',
+});
+
+export const RepositoryLink = styled('a', {
+  flex: 1,
+  color: 'inherit',
+  textDecoration: 'none',
+  transition: 'all .25s ease-in-out',
   '&:hover': {
     color: 'inherit',
-    transform: 'translateY(-1px)',
     '& strong': {
       color: 'var(--nc-lk-1)',
       textDecoration: 'underline',
@@ -49,6 +56,7 @@ export const RepositoryDescription = styled('small', {
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   flex: '1',
+  paddingRight: '.5rem',
 });
 
 export const RepositoryStat = styled('small', {
@@ -57,8 +65,8 @@ export const RepositoryStat = styled('small', {
   gap: '.35rem',
   '& > span': {
     lineHeight: 1,
-  }
-})
+  },
+});
 
 export const RepositoryLanguageIcon = styled('span', {
   display: 'block',
@@ -67,4 +75,19 @@ export const RepositoryLanguageIcon = styled('span', {
   borderRadius: '50%',
   userSelect: 'none',
   pointerEvents: 'none',
-})
+});
+
+export const FavoriteButton = styled('button', {
+  minHeight: 36,
+  height: 36,
+  width: 36,
+  padding: 0,
+  alignSelf: 'flex-end',
+  backgroundColor: 'unset',
+  '&:hover,&:focus,&:active': {
+    backgroundColor: 'unset',
+  },
+  '& > svg': {
+    opacity: '.75',
+  },
+});
