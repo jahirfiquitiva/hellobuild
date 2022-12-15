@@ -120,5 +120,5 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   );
 };
 
-export const withLayout = (children: ComponentChild) =>
+export const withLayout = (children?: ReactNode | ReactNode[] | null) =>
   withAuth(<Layout>{children}</Layout>);

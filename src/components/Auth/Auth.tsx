@@ -8,7 +8,7 @@ import { SignIn } from './SignIn';
 import { SignUp } from './SignUp';
 
 export const Auth = () => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +16,6 @@ export const Auth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.uid]);
 
-  if (loading) return null;
   return (
     <Tabs
       tabsCount={3}
