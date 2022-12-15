@@ -37,6 +37,7 @@ interface AuthProviderFields {
   resetPassword?: (email: string) => Promise<void>;
   user?: UserData | null;
   userId?: string;
+  loading: boolean;
 }
 
 const AuthContext = createContext<AuthProviderFields>({});
@@ -49,9 +50,11 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   const githubCode = searchParams?.get('code');
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const userData = useFirestoreUser(userId);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
+      setLoading(false);
       if (userAuth) {
         toast.dismiss('auth');
         setUserId(userAuth.uid);
@@ -102,6 +105,7 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
     },
     user: userData,
     userId: userId || userData?.uid,
+    loading,
   };
 
   return (

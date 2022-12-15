@@ -10,7 +10,7 @@ import { PasswordReset } from './PasswordReset';
 import { Loading } from '../Loading';
 
 export const Auth = () => {
-  const { userId } = useAuth();
+  const { userId, loading } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const githubCode = searchParams?.get('code');
@@ -20,7 +20,7 @@ export const Auth = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, githubCode]);
 
-  if (githubCode) return <Loading />;
+  if (githubCode || loading) return <Loading />;
   return (
     <Tabs
       tabsCount={3}
