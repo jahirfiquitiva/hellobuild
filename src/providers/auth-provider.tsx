@@ -37,7 +37,7 @@ interface AuthProviderFields {
   resetPassword?: (email: string) => Promise<void>;
   user?: UserData | null;
   userId?: string;
-  loading: boolean;
+  loading?: boolean;
 }
 
 const AuthContext = createContext<AuthProviderFields>({});
