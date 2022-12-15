@@ -62,32 +62,37 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
 
   const renderRepositoriesContent = () => {
     if (stillLoading) return null;
-    if (!repositories || !repositories.length) {
-      if (isFavoritesList && !loadingFavorites) {
-        return (
-          <p>
-            You haven&apos;t added any favorites yet. Go back to{' '}
-            <Link to={'/profile'}>your profile</Link> to do so.
-          </p>
-        );
-      }
-      return null;
-    }
     return (
       <>
-        <RepositoriesSearchContainer>
-          <RepositoriesSearchLabel htmlFor={'search'}>
-            Search repository
-          </RepositoriesSearchLabel>
-          <RepositoriesSearch
-            id={'search'}
-            name={'Search repository'}
-            placeholder={'Search repository'}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <RepositoriesSearchIcon />
-        </RepositoriesSearchContainer>
+        {(!repositories || !repositories.length) &&
+          isFavoritesList &&
+          !loadingFavorites &&
+          !searchQuery && (
+            <p>
+              You haven&apos;t added any favorites yet. Go back to{' '}
+              <Link to={'/profile'}>your profile</Link> to do so.
+            </p>
+          )}
+        {!isFavoritesList || favorites.length ? (
+          <RepositoriesSearchContainer>
+            <RepositoriesSearchLabel htmlFor={'search'}>
+              Search repository
+            </RepositoriesSearchLabel>
+            <RepositoriesSearch
+              id={'search'}
+              name={'Search repository'}
+              placeholder={'Search repository'}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              disabled={
+                isFavoritesList
+                  ? !favorites.length
+                  : (viewer?.repositories?.totalCount || 0) <= 0
+              }
+            />
+            <RepositoriesSearchIcon />
+          </RepositoriesSearchContainer>
+        ) : null}
         <RepositoriesGrid>
           {repositories.map((repo) => {
             return (
