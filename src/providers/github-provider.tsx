@@ -8,7 +8,7 @@ import {
 } from 'react';
 
 import { toast } from 'react-hot-toast';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { toastConfig } from '@/utils/toast';
 import { useAuth } from './auth-provider';
@@ -32,9 +32,10 @@ const GitHubContext = createContext<GitHubProviderFields>({});
 export const GitHubProvider: FC<{
   children?: ReactNode | ReactNode[] | null;
 }> = (props) => {
-  const { user } = useAuth();
+  const { userId, user } = useAuth();
   const { githubToken: latestUserGitHubToken } = user || {};
 
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const code = searchParams?.get('code');
   const [loading, setLoading] = useState<boolean>(false);
@@ -56,9 +57,9 @@ export const GitHubProvider: FC<{
     if (user?.githubToken) {
       storeGitHubToken(user?.githubToken);
     } else {
-      setUserGitHubToken(user?.uid || '', ghAccessToken).catch();
+      setUserGitHubToken(userId || user?.uid || '', ghAccessToken).catch();
     }
-  }, [user, storeGitHubToken, ghAccessToken]);
+  }, [user, userId, storeGitHubToken, ghAccessToken]);
 
   useEffect(() => {
     if (!latestUserGitHubToken) return;
@@ -68,7 +69,10 @@ export const GitHubProvider: FC<{
   }, [latestUserGitHubToken]);
 
   useEffect(() => {
-    if (!code || (ghAccessToken && ghAccessToken !== 'undefined')) return;
+    if (!code || (ghAccessToken && ghAccessToken !== 'undefined')) {
+      if (userId) navigate('/profile');
+      return;
+    }
     setLoading(true);
     fetch(`https://hellobuild-back.jahir.dev/token?code=${code}`, {
       method: 'GET',
@@ -79,17 +83,26 @@ export const GitHubProvider: FC<{
       .then((response) => response.json())
       .then((response: TokenResponse) => {
         const { token } = response;
-        const { access_token: responseToken } = token || {};
+        const {
+          access_token: responseToken,
+          error: errorCode,
+          error_description: error,
+        } = token || {};
         if (responseToken && responseToken !== 'undefined') {
           storeGitHubToken(responseToken, true);
         }
+        if (errorCode !== 'bad_verification_code' && error && !ghAccessToken)
+          toast.error(error, toastConfig);
         setLoading(false);
+        if (userId) navigate('/profile');
       })
       .catch((error) => {
         toast.error(error.message, toastConfig);
         setLoading(false);
+        if (userId) navigate('/profile');
       });
-  }, [code, ghAccessToken]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [code, ghAccessToken, userId]);
 
   const token = user?.githubToken || ghAccessToken;
   return (

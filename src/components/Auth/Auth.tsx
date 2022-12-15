@@ -1,21 +1,26 @@
+import { useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+
 import { Tabs } from '@/components/Tabs';
 import { useAuth } from '@/providers';
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { PasswordReset } from './PasswordReset';
 
 import { SignIn } from './SignIn';
 import { SignUp } from './SignUp';
+import { PasswordReset } from './PasswordReset';
+import { Loading } from '../Loading';
 
 export const Auth = () => {
-  const { user } = useAuth();
+  const { userId } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const githubCode = searchParams?.get('code');
 
   useEffect(() => {
-    if (user?.uid) navigate('/profile');
+    if (userId && !githubCode) navigate('/profile');
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user?.uid]);
+  }, [userId, githubCode]);
 
+  if (githubCode) return <Loading />;
   return (
     <Tabs
       tabsCount={3}

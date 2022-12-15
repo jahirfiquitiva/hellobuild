@@ -5,7 +5,7 @@ import {
   type TypedDocumentNode,
   type OperationVariables,
   type QueryHookOptions,
-  useQuery,
+  useLazyQuery,
 } from '@apollo/client';
 
 import { useGitHub } from '@/providers';
@@ -21,12 +21,19 @@ export const useGitHubQuery = <T, V = OperationVariables>(
   options?: QueryHookOptions<T, V>,
 ): GitHubQueryReturnType<T, V> => {
   const { token: githubToken, loading: loadingGitHubToken } = useGitHub();
-  const queryResult = useQuery<T, V>(query, options);
+  const [fetchQuery, queryResult] = useLazyQuery<T, V>(query, options);
 
   useEffect(() => {
     if (loadingGitHubToken) return;
-    if (githubToken) queryResult?.refetch();
-  }, [loadingGitHubToken, githubToken, queryResult]);
+    if (githubToken) {
+      // Prevent fetching data without a GitHub Token so that Auth errors do not appear in console
+      try {
+        fetchQuery();
+      } catch (e) {
+        console.error('Error', e);
+      }
+    }
+  }, [loadingGitHubToken, githubToken, fetchQuery]);
 
   return {
     ...queryResult,

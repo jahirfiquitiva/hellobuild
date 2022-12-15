@@ -56,7 +56,7 @@ export const Profile: FC<ProfileProps> = (props) => {
   return (
     <ProfileSection id={'profile'}>
       <h1>Profile</h1>
-      {loading && !viewer && (
+      {(!user || loading) && !viewer && (
         <Loading useLine text={'Loading profile details…'} />
       )}
       {viewer ? (

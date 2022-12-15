@@ -13,7 +13,7 @@ import {
   type UserCredential,
   sendPasswordResetEmail,
 } from 'firebase/auth';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 import { auth } from '@/lib/firebase';
@@ -37,6 +37,7 @@ interface AuthProviderFields {
   signOut?: () => void;
   resetPassword?: (email: string) => Promise<void>;
   user?: UserData | null;
+  userId?: string;
 }
 
 const AuthContext = createContext<AuthProviderFields>({});
@@ -45,6 +46,8 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   props,
 ) => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const githubCode = searchParams?.get('code');
   const [loading, setLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const userData = useFirestoreUser(userId);
@@ -57,8 +60,9 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
         setUserId(userAuth.uid);
         createUserInStore(userAuth.uid, userAuth.email || '');
         const { pathname } = window.location;
-        navigate(pathname || '/profile');
+        if (!githubCode) navigate(pathname || '/profile');
       } else {
+        sessionStorage.removeItem('gh_token');
         setUserId(undefined);
         const { pathname } = window.location;
         // Only redirect to home page when in these sites which require authentication
@@ -91,18 +95,18 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
       );
     },
     signOut: () => {
-      signOut(auth);
-      setUserId(undefined);
       sessionStorage.removeItem('gh_token');
+      setUserId(undefined);
+      signOut(auth);
       navigate('/');
     },
     resetPassword: (email: string) => {
       return sendPasswordResetEmail(auth, email);
     },
     user: userData,
+    userId: userId || userData?.uid,
   };
 
-  if (loading) return <Loading />;
   return (
     <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
   );
