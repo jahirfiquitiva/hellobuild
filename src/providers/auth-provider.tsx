@@ -17,7 +17,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 import { auth } from '@/lib/firebase';
-import { Loading } from '@/components/Loading';
 import { createUserInStore } from '@/utils/firestore-operations';
 import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
 import { toastConfig } from '@/utils/toast';
@@ -48,13 +47,11 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const githubCode = searchParams?.get('code');
-  const [loading, setLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const userData = useFirestoreUser(userId);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
-      setLoading(false);
       if (userAuth) {
         toast.dismiss('auth');
         setUserId(userAuth.uid);

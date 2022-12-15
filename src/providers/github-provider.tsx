@@ -70,7 +70,8 @@ export const GitHubProvider: FC<{
 
   useEffect(() => {
     if (!code || (ghAccessToken && ghAccessToken !== 'undefined')) {
-      if (userId) navigate('/profile');
+        const { pathname } = window.location;
+      if (userId) navigate(pathname);
       return;
     }
     setLoading(true);
