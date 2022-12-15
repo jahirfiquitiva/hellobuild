@@ -12,13 +12,9 @@ export interface UserData {
 }
 
 export const useFirestoreUser = (userId?: string): UserData | undefined => {
-  const [userSnapshot, loading, error] = useDocument(
-    doc(db, 'users', userId || 'x'),
-  );
+  const [userSnapshot] = useDocument(doc(db, 'users', userId || 'x'));
 
-  return loading || error
-    ? undefined
-    : userSnapshot
+  return userSnapshot
     ? ({ ...userSnapshot.data(), uid: userId } as UserData)
     : undefined;
 };

@@ -18,6 +18,7 @@ import {
   RepositoriesSearchLabel,
 } from './styled';
 import { useGitHubQuery } from '@/hooks/useGitHubQuery';
+import { useAuth } from '@/providers';
 
 interface RepositoriesProps {
   isFavoritesList?: boolean;
@@ -28,6 +29,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { favorites, loading: loadingFavorites } = useFavorites();
 
+  const { user } = useAuth();
   const {
     loading,
     data,
@@ -35,6 +37,8 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   } = useGitHubQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
   const stillLoading: boolean = loading && !viewer;
+  const hasGitHubToken: boolean =
+    Boolean(user?.githubToken) || Boolean(githubToken);
 
   const repositories: Array<RepositoryData> = (
     viewer?.repositories?.edges?.map((item) => ({
@@ -103,7 +107,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     );
   };
 
-  if (!stillLoading && !githubToken) return null;
+  if (!hasGitHubToken && !viewer) return null;
   return (
     <section id={isFavoritesList ? 'favorites' : 'repositories'}>
       <h2>
@@ -123,23 +127,25 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
           } list…`}
         />
       )}
-      {(viewer?.repositories?.totalCount || 0) > 100 && !isFavoritesList && (
-        <small>
-          <strong>Disclaimer:</strong>
-          <br />
-          Only your 100 most recently updated repositories are shown.
-          <br />
-          Although you have contributed to a total of{' '}
-          <a
-            href={`https://github.com/${viewer?.login}?tab=repositories`}
-            rel={'noopener noreferrer'}
-            target={'_blank'}
-          >
-            {viewer?.repositories?.totalCount || 0} repositories
-          </a>
-          . Impressive! 🎉
-        </small>
-      )}
+      {(viewer?.repositories?.totalCount || 0) > 100 &&
+        !stillLoading &&
+        !isFavoritesList && (
+          <small>
+            <strong>Disclaimer:</strong>
+            <br />
+            Only your 100 most recently updated repositories are shown.
+            <br />
+            Although you have contributed to a total of{' '}
+            <a
+              href={`https://github.com/${viewer?.login}?tab=repositories`}
+              rel={'noopener noreferrer'}
+              target={'_blank'}
+            >
+              {viewer?.repositories?.totalCount || 0} repositories
+            </a>
+            . Impressive! 🎉
+          </small>
+        )}
       {renderRepositoriesContent()}
     </section>
   );

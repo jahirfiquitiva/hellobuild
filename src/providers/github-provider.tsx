@@ -91,10 +91,11 @@ export const GitHubProvider: FC<{
       });
   }, [code, ghAccessToken]);
 
+  const token = user?.githubToken || ghAccessToken;
   return (
     <GitHubContext.Provider
       value={{
-        token: user?.githubToken || ghAccessToken,
+        token,
         loading,
         storeGitHubToken,
       }}

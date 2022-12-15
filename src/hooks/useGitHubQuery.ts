@@ -28,5 +28,9 @@ export const useGitHubQuery = <T, V = OperationVariables>(
     if (githubToken) queryResult?.refetch();
   }, [loadingGitHubToken, githubToken, queryResult]);
 
-  return { ...queryResult, token: githubToken };
+  return {
+    ...queryResult,
+    token: githubToken,
+    loading: queryResult.loading || Boolean(loadingGitHubToken),
+  };
 };
