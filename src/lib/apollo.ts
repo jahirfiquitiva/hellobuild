@@ -25,6 +25,7 @@ const authLink = setContext((_, { headers }) => {
 export const apolloClient = new ApolloClient({
   link: authLink.concat(httpLink),
   cache: new InMemoryCache({
+    resultCaching: false,
     dataIdFromObject(responseObject) {
       switch (responseObject.__typename) {
         case 'User':

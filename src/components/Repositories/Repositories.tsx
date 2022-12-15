@@ -107,7 +107,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     );
   };
 
-  if (!hasGitHubToken && !viewer) return null;
+  if (!loading && !viewer) return null;
   return (
     <section id={isFavoritesList ? 'favorites' : 'repositories'}>
       <h2>

@@ -23,35 +23,19 @@ interface ProfileProps {
 
 export const Profile: FC<ProfileProps> = (props) => {
   const { infoOnly } = props;
-  const { user, loading: loadingAuth } = useAuth();
-  const { loading, error, data } =
+  const { user } = useAuth();
+  const { loading, data } =
     useGitHubQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
 
-  if (loadingAuth) return null;
   return (
-    <>
-      {loading && !viewer && !infoOnly && (
+    <ProfileSection id={'profile'}>
+      {!infoOnly && <h1>Profile</h1>}
+      {loading && !viewer && (
         <Loading useLine text={'Loading profile details…'} />
       )}
-      {(error || !viewer) && !loading ? (
+      {viewer ? (
         <>
-          <p>
-            In order to retrieve your profile data and repositories list, you
-            must connect your GitHub account.
-          </p>
-          <ConnectGitHub
-            href={`https://github.com/login/oauth/authorize?client_id=Iv1.8aae692ae0ec6ccf&redirect_uri=${encodeURI(
-              `${window?.location?.origin || ''}?authorized=true`,
-            )}`}
-          >
-            <Github />
-            <span>Connect to GitHub</span>
-          </ConnectGitHub>
-        </>
-      ) : viewer && !infoOnly ? (
-        <ProfileSection id={'profile'}>
-          {!infoOnly && <h1>Profile</h1>}
           <PhotoAndInfo>
             <Photo
               src={
@@ -107,8 +91,23 @@ export const Profile: FC<ProfileProps> = (props) => {
               </span>
             </FollowersFollowing>
           </ProfileInfo>
-        </ProfileSection>
+        </>
+      ) : !loading ? (
+        <>
+          <p>
+            In order to retrieve your profile data and repositories list, you
+            must connect your GitHub account.
+          </p>
+          <ConnectGitHub
+            href={`https://github.com/login/oauth/authorize?client_id=Iv1.8aae692ae0ec6ccf&redirect_uri=${encodeURI(
+              `${window?.location?.origin || ''}?authorized=true`,
+            )}`}
+          >
+            <Github />
+            <span>Connect to GitHub</span>
+          </ConnectGitHub>
+        </>
       ) : null}
-    </>
+    </ProfileSection>
   );
 };
