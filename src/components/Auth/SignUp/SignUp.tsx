@@ -7,6 +7,7 @@ import { useAuth } from '@/providers';
 import { toastConfig } from '@/utils/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
 import { createUserInStore } from '@/utils/firestore-operations';
+import { PasswordField } from '../PasswordField';
 
 interface SignUpFormData {
   firstName: string;
@@ -117,18 +118,14 @@ export const SignUp = () => {
         ) : null}
       </FormField>
 
-      <FormField>
-        <label htmlFor={'password'}>Password</label>
-        <input
-          id={'password'}
-          type={'password'}
-          disabled={formik.isSubmitting}
-          {...formik.getFieldProps('password')}
-        />
+      <PasswordField
+        disabled={formik.isSubmitting}
+        {...formik.getFieldProps('password')}
+      >
         {touched.password && errors.password ? (
           <FieldError>{errors.password}</FieldError>
         ) : null}
-      </FormField>
+      </PasswordField>
 
       <button
         type={'button'}
