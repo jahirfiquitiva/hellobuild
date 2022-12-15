@@ -36,7 +36,6 @@ interface AuthProviderFields {
   signIn?: (accountInfo: AccountInfo) => Promise<UserCredential>;
   signOut?: () => void;
   resetPassword?: (email: string) => Promise<void>;
-  loading?: boolean;
   user?: UserData | null;
 }
 
@@ -101,7 +100,6 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
       return sendPasswordResetEmail(auth, email);
     },
     user: userData,
-    loading,
   };
 
   if (loading) return <Loading />;

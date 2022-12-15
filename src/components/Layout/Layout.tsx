@@ -1,5 +1,4 @@
-import { FC, ReactNode, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import type { FC, ReactNode } from 'react';
 
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import {
@@ -13,9 +12,10 @@ import {
   ProfilePill,
 } from './styled';
 import { withAuth } from '@/components/Auth';
-import { useAuth, useGitHub } from '@/providers';
+import { useAuth } from '@/providers';
 import { getUserPhotoUrl } from '@/utils/user-photo';
 import type { UserData } from '@/hooks/useFirestoreUser';
+import { useGitHubQuery } from '@/hooks/useGitHubQuery';
 
 const getUserFullName = (user?: UserData | null): string => {
   let fullName = '';
@@ -30,13 +30,8 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   const { children } = props;
   const { user, signOut } = useAuth();
   const { uid } = user || {};
-  const { token: githubToken } = useGitHub();
-  const { data: githubUser, refetch } =
-    useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
-
-  useEffect(() => {
-    if (githubToken) refetch?.();
-  }, [githubToken, refetch]);
+  const { data: githubUser } =
+    useGitHubQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
 
   return (
     <>
@@ -78,7 +73,7 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
                 <li>
                   <NavLink to={'/profile'}>Profile</NavLink>
                 </li>
-                {Boolean(githubToken) && (
+                {Boolean(githubUser) && (
                   <li>
                     <NavLink to={'/favorites'}>Favorites</NavLink>
                   </li>

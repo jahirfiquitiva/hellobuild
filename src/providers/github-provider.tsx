@@ -32,7 +32,7 @@ const GitHubContext = createContext<GitHubProviderFields>({});
 export const GitHubProvider: FC<{
   children?: ReactNode | ReactNode[] | null;
 }> = (props) => {
-  const { user, loading: loadingUser } = useAuth();
+  const { user } = useAuth();
   const { githubToken: latestUserGitHubToken } = user || {};
 
   const [searchParams] = useSearchParams();
@@ -45,7 +45,7 @@ export const GitHubProvider: FC<{
   });
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const storeGitHubToken = (token?: string, force?: boolean) => {
+  const storeGitHubToken = (token?: string | null, force?: boolean) => {
     if (!token && !force) return;
     if (token) sessionStorage.setItem('gh_token', token);
     else sessionStorage.removeItem('gh_token');
@@ -54,7 +54,7 @@ export const GitHubProvider: FC<{
 
   useEffect(() => {
     if (user?.githubToken) {
-      storeGitHubToken?.(user?.githubToken);
+      storeGitHubToken(user?.githubToken);
     } else {
       setUserGitHubToken(user?.uid || '', ghAccessToken).catch();
     }
@@ -94,8 +94,8 @@ export const GitHubProvider: FC<{
   return (
     <GitHubContext.Provider
       value={{
-        token: ghAccessToken,
-        loading: (loading || loadingUser) && !ghAccessToken,
+        token: user?.githubToken || ghAccessToken,
+        loading,
         storeGitHubToken,
       }}
     >

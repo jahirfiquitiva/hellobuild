@@ -1,8 +1,7 @@
-import { type FC, useEffect } from 'react';
-import { useQuery } from '@apollo/client';
+import type { FC } from 'react';
 import { AtSign, Github, Globe, Users } from 'lucide-react';
 
-import { useAuth, useGitHub } from '@/providers';
+import { useAuth } from '@/providers';
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import { getUserPhotoUrl } from '@/utils/user-photo';
 import { Loading } from '../Loading';
@@ -16,6 +15,7 @@ import {
   ProfileInfo,
   ProfileSection,
 } from './styled';
+import { useGitHubQuery } from '@/hooks/useGitHubQuery';
 
 interface ProfileProps {
   infoOnly?: boolean;
@@ -23,20 +23,15 @@ interface ProfileProps {
 
 export const Profile: FC<ProfileProps> = (props) => {
   const { infoOnly } = props;
-  const { user } = useAuth();
-  const { token: githubToken, loading: loadingAuth } = useGitHub();
-  const { loading, error, data, refetch } =
-    useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
+  const { user, loading: loadingAuth } = useAuth();
+  const { loading, error, data } =
+    useGitHubQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
-
-  useEffect(() => {
-    if (githubToken) refetch?.();
-  }, [githubToken, refetch]);
 
   if (loadingAuth) return null;
   return (
     <>
-      {loading && !viewer && (
+      {loading && !viewer && !infoOnly && (
         <Loading useLine text={'Loading profile details…'} />
       )}
       {(error || !viewer) && !loading ? (
@@ -54,7 +49,7 @@ export const Profile: FC<ProfileProps> = (props) => {
             <span>Connect to GitHub</span>
           </ConnectGitHub>
         </>
-      ) : viewer ? (
+      ) : viewer && !infoOnly ? (
         <ProfileSection id={'profile'}>
           {!infoOnly && <h1>Profile</h1>}
           <PhotoAndInfo>

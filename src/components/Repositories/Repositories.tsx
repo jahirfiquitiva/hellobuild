@@ -1,13 +1,11 @@
-import { useEffect, useState, type FC } from 'react';
+import { useState, type FC } from 'react';
 import { Link } from 'react-router-dom';
-import { useQuery } from '@apollo/client';
 
 import {
   GET_REPOS_QUERY,
   RepositoriesQueryResult,
   RepositoryData,
 } from '@/queries/repos';
-import { useGitHub } from '@/providers';
 import { useFavorites } from '@/hooks/useFavorites';
 
 import { Loading } from '../Loading';
@@ -19,6 +17,7 @@ import {
   RepositoriesSearchIcon,
   RepositoriesSearchLabel,
 } from './styled';
+import { useGitHubQuery } from '@/hooks/useGitHubQuery';
 
 interface RepositoriesProps {
   isFavoritesList?: boolean;
@@ -27,13 +26,13 @@ interface RepositoriesProps {
 export const Repositories: FC<RepositoriesProps> = (props) => {
   const { isFavoritesList } = props;
   const [searchQuery, setSearchQuery] = useState<string>('');
-
-  const { token: githubToken, loading: loadingGitHubToken } = useGitHub();
-
   const { favorites, loading: loadingFavorites } = useFavorites();
 
-  const { loading, data, refetch } =
-    useQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
+  const {
+    loading,
+    data,
+    token: githubToken,
+  } = useGitHubQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
   const stillLoading: boolean = loading && !viewer;
 
@@ -56,10 +55,6 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
           .includes(searchQuery.toLowerCase())
       );
     });
-
-  useEffect(() => {
-    if (githubToken) refetch?.();
-  }, [githubToken, refetch]);
 
   const renderRepositoriesContent = () => {
     if (stillLoading) return null;
@@ -108,8 +103,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     );
   };
 
-  if (loadingGitHubToken) return null;
-  if (!loadingGitHubToken && !githubToken) return null;
+  if (!stillLoading && !githubToken) return null;
   return (
     <section id={isFavoritesList ? 'favorites' : 'repositories'}>
       <h2>
