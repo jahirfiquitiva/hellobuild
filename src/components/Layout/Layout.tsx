@@ -1,5 +1,4 @@
-import type { FC, ComponentChild } from '@/types/fc';
-import { Link } from 'react-router-dom';
+import type { FC, ReactNode } from 'react';
 import { useQuery } from '@apollo/client';
 
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
@@ -26,7 +25,9 @@ const getUserFullName = (user?: UserData | null): string => {
   return fullName || '…';
 };
 
-export const Layout: FC = (props) => {
+export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
+  props,
+) => {
   const { children } = props;
   const { user, signOut } = useAuth();
   const { uid } = user || {};

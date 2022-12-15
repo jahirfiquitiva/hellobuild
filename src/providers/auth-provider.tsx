@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useEffect } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type FC,
+  type ReactNode,
+} from 'react';
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -8,7 +15,6 @@ import {
 } from 'firebase/auth';
 
 import { auth } from '@/lib/firebase';
-import { FC } from '@/types/fc';
 import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
@@ -40,7 +46,9 @@ interface AuthProviderFields {
 
 const AuthContext = createContext<AuthProviderFields>({});
 
-export const AuthProvider: FC = (props) => {
+export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
+  props,
+) => {
   const { children } = props;
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);

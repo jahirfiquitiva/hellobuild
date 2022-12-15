@@ -1,6 +1,6 @@
+import type { ReactNode } from 'react';
 import { AuthProvider } from '@/providers';
-import type { ComponentChild } from '@/types/fc';
 
-export const withAuth = (children: ComponentChild) => {
+export const withAuth = (children: ReactNode | ReactNode[] | null) => {
   return <AuthProvider>{children}</AuthProvider>;
 };

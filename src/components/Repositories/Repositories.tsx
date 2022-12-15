@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type FC } from 'react';
 import { useQuery } from '@apollo/client';
 
 import {
@@ -18,7 +18,6 @@ import {
   RepositoriesSearchIcon,
   RepositoriesSearchLabel,
 } from './styled';
-import { FC } from '@/types/fc';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Link } from 'react-router-dom';
 
