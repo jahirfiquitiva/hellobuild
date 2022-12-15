@@ -9,6 +9,7 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
   --nc-err: #d43551;
+  --nc-err-2: #bc2f48;
 }
 
 :root {
@@ -52,6 +53,7 @@ body {
 button {
   transition: all 0.15s ease-in-out;
   min-height: 42px;
+  font-weight: 500;
 }
 
 section {
@@ -80,6 +82,7 @@ section {
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --nc-err: #fc5c65;
+    --nc-err: #f1768c;
+    --nc-err-2: #ef627b;
   }
 }

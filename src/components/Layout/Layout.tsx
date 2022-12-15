@@ -10,6 +10,7 @@ import {
   NavLinksGroup,
   ProfilePhoto,
   ProfilePill,
+  SignOutButton,
 } from './styled';
 import { withAuth } from '@/components/Auth';
 import { useAuth } from '@/providers';
@@ -79,13 +80,13 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
                   </li>
                 )}
                 <li>
-                  <button
+                  <SignOutButton
                     onClick={() => {
                       signOut?.();
                     }}
                   >
                     Sign Out
-                  </button>
+                  </SignOutButton>
                 </li>
               </>
             ) : (

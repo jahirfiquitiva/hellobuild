@@ -87,3 +87,11 @@ export const Footer = styled('footer', {
     justifyContent: 'space-between',
   },
 });
+
+export const SignOutButton = styled('button', {
+  color: 'var(--nc-bg-1)',
+  backgroundColor: 'var(--nc-err)',
+  '&:hover': {
+    backgroundColor: 'var(--nc-err-2)',
+  },
+});
