@@ -24,8 +24,10 @@ interface ProfileProps {
 
 export const Profile: FC<ProfileProps> = (props) => {
   const { infoOnly } = props;
-  const { user } = useAuth();
-  const { token: githubToken } = useGitHubAuth(user?.githubToken);
+  const { user, loading: authLoading } = useAuth();
+  const { token: githubToken, loading: loadingGitHubToken } = useGitHubAuth(
+    user?.githubToken,
+  );
   const { loading, error, data, refetch } =
     useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
@@ -34,10 +36,13 @@ export const Profile: FC<ProfileProps> = (props) => {
     refetch?.();
   }, [githubToken, refetch]);
 
-  if (loading) return <Loading />;
+  if (authLoading || loadingGitHubToken) return null;
   return (
     <>
       {!infoOnly && <h1>Profile</h1>}
+      {loading && !viewer && (
+        <Loading useLine text={'Loading profile details…'} />
+      )}
       {(error || !viewer) && !loading ? (
         <>
           <p>
@@ -53,7 +58,7 @@ export const Profile: FC<ProfileProps> = (props) => {
             <span>Connect to GitHub</span>
           </ConnectGitHub>
         </>
-      ) : (
+      ) : viewer ? (
         <ProfileSection id={'profile'}>
           <PhotoAndInfo>
             <Photo
@@ -61,6 +66,7 @@ export const Profile: FC<ProfileProps> = (props) => {
                 viewer?.avatarUrl ||
                 getUserPhotoUrl(viewer?.login, user?.email, user?.firstName)
               }
+              alt={'User avatar'}
             />
             <ProfileInfo className={'truncate'}>
               <strong>{viewer?.name}</strong>
@@ -110,7 +116,7 @@ export const Profile: FC<ProfileProps> = (props) => {
             </FollowersFollowing>
           </ProfileInfo>
         </ProfileSection>
-      )}
+      ) : null}
     </>
   );
 };

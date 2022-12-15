@@ -20,6 +20,7 @@ import {
 } from './styled';
 import { FC } from '@/types/fc';
 import { useFavorites } from '@/hooks/useFavorites';
+import { Link } from 'react-router-dom';
 
 interface RepositoriesProps {
   isFavoritesList?: boolean;
@@ -29,14 +30,17 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   const { isFavoritesList } = props;
   const [searchQuery, setSearchQuery] = useState<string>('');
 
-  const { user } = useAuth();
-  const { token: githubToken } = useGitHubAuth(user?.githubToken);
+  const { user, loading: authLoading } = useAuth();
+  const { token: githubToken, loading: loadingGitHubToken } = useGitHubAuth(
+    user?.githubToken,
+  );
 
   const favorites = useFavorites();
 
   const { loading, data, refetch } =
     useQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
+  const stillLoading: boolean = loading && !viewer;
 
   const repositories: Array<RepositoryData> = (
     viewer?.repositories?.edges?.map((item) => ({
@@ -62,15 +66,38 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     refetch?.();
   }, [githubToken, refetch]);
 
-  if (loading && isFavoritesList) return <Loading />;
-  if (!repositories || !repositories.length) return null;
+  if (authLoading || loadingGitHubToken) return null;
+  if ((!repositories || !repositories.length) && !stillLoading) {
+    if (isFavoritesList) {
+      return (
+        <>
+          <h2>Favorites</h2>
+          <p>
+            You haven&apos;t added any favorites yet. Go back to{' '}
+            <Link to={'/profile'}>your profile</Link> to do so.
+          </p>
+        </>
+      );
+    }
+    return null;
+  }
   return (
     <>
       <h2>
         {isFavoritesList
-          ? `Favorites (${favorites.length})`
-          : `Repositories (${viewer?.repositories?.totalCount})`}
+          ? `Favorites ${stillLoading ? '' : `(${favorites.length})`}`.trim()
+          : `Repositories ${
+              stillLoading ? '' : `(${viewer?.repositories?.totalCount || 0})`
+            }`.trim()}
       </h2>
+      {stillLoading && (
+        <Loading
+          useLine
+          text={`Loading ${
+            isFavoritesList ? 'favorites' : 'repositories'
+          } list…`}
+        />
+      )}
       {(viewer?.repositories?.totalCount || 0) > 100 && !isFavoritesList && (
         <small>
           <strong>Disclaimer:</strong>
@@ -88,34 +115,39 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
           . Impressive! 🎉
         </small>
       )}
-      <RepositoriesSearchContainer>
-        <RepositoriesSearchLabel htmlFor={'search'}>
-          Search repository
-        </RepositoriesSearchLabel>
-        <RepositoriesSearch
-          id={'search'}
-          name={'Search repository'}
-          placeholder={'Search repository'}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <RepositoriesSearchIcon />
-      </RepositoriesSearchContainer>
-      <RepositoriesGrid>
-        {repositories.map((repo) => {
-          return (
-            <Repository
-              key={repo?.nameWithOwner || repo?.name}
-              username={viewer?.login || ''}
-              repositoryData={repo}
-              favoriteId={
-                favorites.find((fav) => fav.repoName === repo?.nameWithOwner)
-                  ?.id
-              }
+      {!stillLoading && (
+        <>
+          <RepositoriesSearchContainer>
+            <RepositoriesSearchLabel htmlFor={'search'}>
+              Search repository
+            </RepositoriesSearchLabel>
+            <RepositoriesSearch
+              id={'search'}
+              name={'Search repository'}
+              placeholder={'Search repository'}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
-          );
-        })}
-      </RepositoriesGrid>
+            <RepositoriesSearchIcon />
+          </RepositoriesSearchContainer>
+          <RepositoriesGrid>
+            {repositories.map((repo) => {
+              return (
+                <Repository
+                  key={repo?.nameWithOwner || repo?.name}
+                  username={viewer?.login || ''}
+                  repositoryData={repo}
+                  favoriteId={
+                    favorites.find(
+                      (fav) => fav.repoName === repo?.nameWithOwner,
+                    )?.id
+                  }
+                />
+              );
+            })}
+          </RepositoriesGrid>
+        </>
+      )}
     </>
   );
 };

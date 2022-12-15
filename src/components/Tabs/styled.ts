@@ -9,8 +9,7 @@ export const TabList = styled('div', {
   alignItems: 'center',
   justifyContent: 'space-evenly',
   border: '1px solid var(--nc-bg-3)',
-  gap: '1px',
-  backgroundColor: 'var(--nc-bg-3)',
+  backgroundColor: 'var(--nc-bg-2)',
   borderBottomWidth: 0,
   borderTopLeftRadius: '.5rem',
   borderTopRightRadius: '.5rem',
@@ -19,6 +18,9 @@ export const TabList = styled('div', {
   },
   '& > *:last-child': {
     borderTopRightRadius: '.5rem',
+  },
+  '& > *:not(:last-child)': {
+    borderRight: '1px solid var(--nc-bg-3)',
   },
 });
 
@@ -38,7 +40,7 @@ export const Tab = styled('button', {
   },
   '&:active, &:focus': {
     backgroundColor: 'unset',
-  }
+  },
 });
 
 export const TabContent = styled('section', {

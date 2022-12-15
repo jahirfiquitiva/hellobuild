@@ -8,7 +8,40 @@ export const Main = styled('main', {
 
 export const Header = styled('header', {});
 
-export const Navigation = styled('nav', {});
+export const Navigation = styled('nav', {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  gap: '1rem',
+  '@tablet': {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});
+
+export const NavLinksGroup = styled('ul', {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '1rem',
+  listStyle: 'none',
+  margin: 0,
+  '& > li': {
+    display: 'flex',
+    margin: 0,
+    height: '100%',
+    minHeight: '42px',
+    verticalAlign: 'middle',
+    alignItems: 'center',
+  },
+});
+
+export const NavLink = styled(Link, {
+  display: 'flex',
+  alignItems: 'center',
+  height: '100%',
+  minHeight: '42px',
+  padding: '.25rem .5rem',
+});
 
 export const Footer = styled('footer', {});
 
@@ -17,14 +50,16 @@ export const ProfilePill = styled(Link, {
   alignItems: 'center',
   border: '1px solid var(--nc-bg-3)',
   alignSelf: 'flex-start',
-  padding: '.25rem .5rem',
+  padding: '.5rem .5rem',
   gap: '.5rem',
   borderRadius: 9999,
   color: 'inherit',
   textDecoration: 'none',
+  transition: 'all .15s ease-in-out',
   '&:hover,&:focus': {
     color: 'inherit',
     textDecoration: 'none',
+    borderColor: 'var(--nc-tx-2)',
   },
   '& > *': {
     margin: 0,

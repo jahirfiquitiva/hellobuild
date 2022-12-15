@@ -2,16 +2,17 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { ApolloProvider } from '@apollo/client';
 
-import { LoginPage, ReposPage, FavoritesPage, NotFoundPage } from '@/pages';
+import { ReposPage, FavoritesPage, NotFoundPage } from '@/pages';
 import { withLayout } from '@/components/Layout';
 import { apolloClient } from '@/lib/apollo';
 
 import '@/styles/global.scss';
+import { Auth } from './components/Auth';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: withLayout(<LoginPage />),
+    element: withLayout(<Auth />),
     errorElement: withLayout(<NotFoundPage />),
   },
   {

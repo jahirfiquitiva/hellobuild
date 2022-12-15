@@ -1,23 +1,30 @@
 import type { FC, ComponentChild } from '@/types/fc';
 import { Link } from 'react-router-dom';
+import { useQuery } from '@apollo/client';
 
+import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import {
   Footer,
   Header,
   Main,
   Navigation,
+  NavLink,
+  NavLinksGroup,
   ProfilePhoto,
   ProfilePill,
 } from './styled';
 import { withAuth } from '@/components/Auth';
 import { useAuth } from '@/providers';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
+import { getUserPhotoUrl } from '@/utils/user-photo';
 
 export const Layout: FC = (props) => {
   const { children } = props;
   const { user, signOut } = useAuth();
   const { uid } = user || {};
   const { token: githubToken } = useGitHubAuth(user?.githubToken);
+  const { data: githubUser } =
+    useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   return (
     <>
       <Header>
@@ -25,7 +32,14 @@ export const Layout: FC = (props) => {
           {uid ? (
             <ProfilePill to={'/profile'}>
               <ProfilePhoto
-                src={`https://unavatar.io/${user?.email}`}
+                src={
+                  githubUser?.viewer?.avatarUrl ||
+                  getUserPhotoUrl(
+                    githubUser?.viewer?.login,
+                    githubUser?.viewer?.email || user?.email,
+                    githubUser?.viewer?.name || user?.firstName,
+                  )
+                }
                 alt={'User avatar'}
               />
               <span>
@@ -36,19 +50,26 @@ export const Layout: FC = (props) => {
             <div>
               <h1>HelloBuild Exercise</h1>
               <small>
-                by <a href={'https://jahir.dev'}>Jahir Fiquitiva</a>
+                by{' '}
+                <a
+                  href={'https://jahir.dev'}
+                  rel={'noopener noreferrer'}
+                  target={'_blank'}
+                >
+                  Jahir Fiquitiva
+                </a>
               </small>
             </div>
           )}
-          <ul>
+          <NavLinksGroup>
             {uid ? (
               <>
                 <li>
-                  <Link to={'/profile'}>Profile</Link>
+                  <NavLink to={'/profile'}>Profile</NavLink>
                 </li>
                 {Boolean(githubToken) && (
                   <li>
-                    <Link to={'/favorites'}>Favorites</Link>
+                    <NavLink to={'/favorites'}>Favorites</NavLink>
                   </li>
                 )}
                 <li>
@@ -63,10 +84,10 @@ export const Layout: FC = (props) => {
               </>
             ) : (
               <li>
-                <Link to={'/'}>Home</Link>
+                <NavLink to={'/'}>Home</NavLink>
               </li>
             )}
-          </ul>
+          </NavLinksGroup>
         </Navigation>
       </Header>
       <Main>{children}</Main>

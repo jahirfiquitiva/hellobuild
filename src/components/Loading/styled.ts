@@ -6,4 +6,7 @@ export const LoadingContainer = styled('div', {
   gap: '2rem',
   alignItems: 'center',
   justifyContent: 'center',
+  margin: '1rem 0',
 });
+
+export const LoadingText = styled('p', { margin: 0 });

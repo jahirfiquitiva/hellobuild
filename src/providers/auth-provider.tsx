@@ -61,7 +61,8 @@ export const AuthProvider: FC = (props) => {
         toast.dismiss('auth');
         setUserId(userAuth.uid);
         createUserInStore(userAuth.uid, userAuth.email || '');
-        if (!githubTokenLoading) navigate('/profile');
+        const { pathname } = window.location;
+        if (!githubTokenLoading) navigate(pathname || '/profile');
       } else {
         setUserId(undefined);
         const { pathname } = window.location;

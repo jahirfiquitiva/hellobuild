@@ -33,39 +33,46 @@ export const FavoriteToggle: FC<FavoriteToggleProps> = (props) => {
     if (submitting) return;
     setSubmitting(true);
     if (favoriteId) {
+      toast.loading('Removing favorite…', { ...toastConfig, id: favoriteId });
       removeFromFavorites(user?.uid, favoriteId)
         .then((deleted) => {
           if (deleted)
             toast(`Repository "${repoName}" removed from favorites`, {
               ...toastConfig,
               icon: '🗑️',
+              id: favoriteId,
             });
           setSubmitting(false);
         })
         .catch((error) => {
           toast.error(
             error.message || 'Unexpected error. Try again in a minute',
-            toastConfig,
+            { ...toastConfig, id: favoriteId },
           );
           setSubmitting(false);
         });
     } else {
+      toast.loading('Adding favorite…', { ...toastConfig, id: repoName });
       addToFavorites(user?.uid, repoName)
         .then((newFavoriteId) => {
           if (newFavoriteId) {
             toast(`Repository "${repoName}" added to favorites`, {
               ...toastConfig,
               icon: '💚',
+              id: repoName,
             });
           } else {
-            toast.error('Unexpected error. Try again in a minute', toastConfig);
+            toast.error('Unexpected error. Try again in a minute', {
+              ...toastConfig,
+              id: repoName,
+            });
           }
           setSubmitting(false);
         })
         .catch((error) => {
           toast.error(
             error.message || 'Unexpected error. Try again in a minute',
-            toastConfig,
+            { ...toastConfig, id: repoName },
           );
           setSubmitting(false);
         });
