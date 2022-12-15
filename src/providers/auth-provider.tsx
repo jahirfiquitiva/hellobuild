@@ -4,6 +4,7 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   type UserCredential,
+  sendPasswordResetEmail,
 } from 'firebase/auth';
 
 import { auth } from '@/lib/firebase';
@@ -12,7 +13,10 @@ import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
 import toast from 'react-hot-toast';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
-import { createUserInStore, setUserGitHubToken } from '@/utils/firestore-operations';
+import {
+  createUserInStore,
+  setUserGitHubToken,
+} from '@/utils/firestore-operations';
 import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
 import { toastConfig } from '@/utils/toast';
 
@@ -29,6 +33,7 @@ interface AuthProviderFields {
   signUp?: (accountInfo: AccountInfo) => Promise<UserCredential>;
   signIn?: (accountInfo: AccountInfo) => Promise<UserCredential>;
   signOut?: () => void;
+  resetPassword?: (email: string) => Promise<void>;
   loading?: boolean;
   user?: UserData | null;
 }
@@ -93,6 +98,9 @@ export const AuthProvider: FC = (props) => {
       sessionStorage.setItem('gh_token', '');
       signOut(auth);
       navigate('/');
+    },
+    resetPassword: (email: string) => {
+      return sendPasswordResetEmail(auth, email);
     },
     user: userData,
     loading,

@@ -2,7 +2,7 @@ import { useFormik } from 'formik';
 import toast from 'react-hot-toast';
 
 import Yup from '@/lib/yup';
-import { Form, FormField, FieldError } from './../styled';
+import { Form, FormField, FieldError } from '../styled';
 import { useAuth } from '@/providers';
 import { toastConfig } from '@/utils/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
@@ -10,32 +10,27 @@ import { createUserInStore } from '@/utils/firestore-operations';
 
 interface SignInFormData {
   email: string;
-  password: string;
 }
 
 const signInFormValidation = Yup.object({
   email: Yup.string()
     .email('Invalid email address')
     .required('This field is required'),
-  password: Yup.string()
-    .min(8, 'Your password must be at least 8 characters long')
-    .required('This field is required'),
 });
 
-export const SignIn = () => {
-  const { signIn } = useAuth();
+export const PasswordReset = () => {
+  const { resetPassword } = useAuth();
   const formik = useFormik<SignInFormData>({
-    initialValues: { email: '', password: '' },
+    initialValues: { email: '' },
     validationSchema: signInFormValidation,
     onSubmit: async (values: SignInFormData) => {
-      toast.loading('Validating data…', { ...toastConfig, id: 'auth' });
-      await signIn?.({
-        email: values.email || '',
-        password: values.password || '',
-      })
-        .then((result) => {
-          createUserInStore(result.user.uid, values.email || '');
-          toast.success('Welcome back!', { ...toastConfig, id: 'auth' });
+      toast.loading('Sending email…', { ...toastConfig, id: 'auth' });
+      await resetPassword?.(values.email || '')
+        .then(() => {
+          toast.success('Email sent! Check your inbox', {
+            ...toastConfig,
+            id: 'auth',
+          });
         })
         .catch((error) => {
           toast.error(authErrorToMessage(error.code), {
@@ -62,19 +57,10 @@ export const SignIn = () => {
           <FieldError>{errors.email}</FieldError>
         ) : null}
       </FormField>
-
-      <FormField>
-        <label htmlFor={'password'}>Password</label>
-        <input
-          id={'password'}
-          type={'password'}
-          disabled={formik.isSubmitting}
-          {...formik.getFieldProps('password')}
-        />
-        {touched.password && errors.password ? (
-          <FieldError>{errors.password}</FieldError>
-        ) : null}
-      </FormField>
+      <small>
+        If there&apos;s an account registered with this email, you will receive
+        a message with the steps to reset your password.
+      </small>
 
       <button
         type={'button'}
@@ -84,7 +70,7 @@ export const SignIn = () => {
           formik.submitForm();
         }}
       >
-        Sign in
+        Reset
       </button>
     </Form>
   );

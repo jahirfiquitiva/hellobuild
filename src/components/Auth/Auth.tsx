@@ -1,4 +1,5 @@
 import { Tabs } from '@/components/Tabs';
+import { PasswordReset } from './PasswordReset';
 
 import { SignIn } from './SignIn';
 import { SignUp } from './SignUp';
@@ -6,14 +7,17 @@ import { SignUp } from './SignUp';
 export const Auth = () => {
   return (
     <Tabs
-      tabsCount={2}
+      tabsCount={3}
       getTabTitle={(index) => {
-        return index === 0 ? 'Sign In' : 'Sign Up';
+        if (index === 0) return 'Sign In';
+        if (index === 1) return 'Sign Up';
+        return 'Reset Password';
       }}
       getTabChild={(index) => {
-        return index === 0 ? <SignIn /> : <SignUp />;
+        if (index === 0) return <SignIn />;
+        if (index === 1) return <SignUp />;
+        return <PasswordReset />;
       }}
-      initialTab={1}
     />
   );
 };

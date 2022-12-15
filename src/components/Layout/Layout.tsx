@@ -46,7 +46,7 @@ export const Layout: FC = (props) => {
               </>
             ) : (
               <li>
-                <Link to={'/'}>Login</Link>
+                <Link to={'/'}>Home</Link>
               </li>
             )}
           </ul>

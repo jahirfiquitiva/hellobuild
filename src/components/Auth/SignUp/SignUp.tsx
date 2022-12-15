@@ -81,6 +81,7 @@ export const SignUp = () => {
             type={'text'}
             id={'firstName'}
             placeholder={'John'}
+            disabled={formik.isSubmitting}
             {...formik.getFieldProps('firstName')}
           />
           {touched.firstName && errors.firstName ? (
@@ -93,6 +94,7 @@ export const SignUp = () => {
             type={'text'}
             id={'lastName'}
             placeholder={'Doe'}
+            disabled={formik.isSubmitting}
             {...formik.getFieldProps('lastName')}
           />
           {touched.lastName && errors.lastName ? (
@@ -107,6 +109,7 @@ export const SignUp = () => {
           id={'email'}
           placeholder={'john.doe@email.com'}
           type={'email'}
+          disabled={formik.isSubmitting}
           {...formik.getFieldProps('email')}
         />
         {touched.email && errors.email ? (
@@ -119,6 +122,7 @@ export const SignUp = () => {
         <input
           id={'password'}
           type={'password'}
+          disabled={formik.isSubmitting}
           {...formik.getFieldProps('password')}
         />
         {touched.password && errors.password ? (
@@ -129,6 +133,7 @@ export const SignUp = () => {
       <button
         type={'button'}
         data-role={'submit'}
+        disabled={formik.isSubmitting}
         onClick={() => {
           formik.submitForm();
         }}
