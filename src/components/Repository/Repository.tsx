@@ -85,7 +85,14 @@ export const Repository: FC<RepositoryProps> = (props) => {
       <RepositoryDescription>
         {repositoryData?.description}
       </RepositoryDescription>
-      <RepositoryHeader css={{ marginTop: 'auto', gap: '1rem' }}>
+      <RepositoryHeader
+        css={{
+          marginTop: 'auto',
+          gap: '1rem',
+          paddingTop: '.5rem',
+          paddingBottom: '.25rem',
+        }}
+      >
         {Boolean(repositoryData?.primaryLanguage) && (
           <RepositoryStat>
             <RepositoryLanguageIcon
