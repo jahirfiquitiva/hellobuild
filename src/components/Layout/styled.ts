@@ -4,6 +4,8 @@ import { styled } from '~/stitches';
 export const Main = styled('main', {
   display: 'flex',
   flexDirection: 'column',
+  height: '100%',
+  flex: 1,
 });
 
 export const Header = styled('header', {});
@@ -43,8 +45,6 @@ export const NavLink = styled(Link, {
   padding: '.25rem .5rem',
 });
 
-export const Footer = styled('footer', {});
-
 export const ProfilePill = styled(Link, {
   display: 'flex',
   alignItems: 'center',
@@ -72,4 +72,18 @@ export const ProfilePhoto = styled('img', {
   borderRadius: '50%',
   objectFit: 'cover',
   objectPosition: 'center',
+});
+
+export const Footer = styled('footer', {
+  marginTop: 'auto',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '1rem',
+  paddingTop: '1.5rem',
+  paddingBottom: '.5rem',
+  borderTop: '1px solid var(--nc-bg-3)',
+  '@tablet': {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });

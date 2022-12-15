@@ -98,7 +98,25 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
         </Navigation>
       </Header>
       <Main>{children}</Main>
-      <Footer />
+      <Footer>
+        <p>
+          Project developed by{' '}
+          <a
+            href={'https://jahir.dev'}
+            rel={'noopener noreferrer'}
+            target={'_blank'}
+          >
+            Jahir Fiquitiva
+          </a>
+        </p>
+        <a
+          href={'https://github.com/jahirfiquitiva/hellobuild'}
+          rel={'noopener noreferrer'}
+          target={'_blank'}
+        >
+          View source code
+        </a>
+      </Footer>
     </>
   );
 };

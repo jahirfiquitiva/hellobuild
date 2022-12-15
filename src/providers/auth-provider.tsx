@@ -54,13 +54,19 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   const [loading, setLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const userData = useFirestoreUser(userId);
-  const { token: githubToken, loading: githubTokenLoading } = useGitHubAuth(
-    userData?.githubToken,
-  );
+  const {
+    token: githubToken,
+    loading: githubTokenLoading,
+    storeGitHubToken,
+  } = useGitHubAuth(userData?.githubToken);
 
   useEffect(() => {
-    if (userId) setUserGitHubToken(userId || '', githubToken).catch();
-  }, [userId, githubToken]);
+    if (userData?.githubToken) {
+        storeGitHubToken?.(userData?.githubToken);
+      } else {
+        setUserGitHubToken(userId || '', githubToken).catch();
+      }
+  }, [userId, githubToken, userData, storeGitHubToken]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
@@ -106,7 +112,7 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
     signOut: () => {
       signOut(auth);
       setUserId(undefined);
-      sessionStorage.setItem('gh_token', '');
+      storeGitHubToken?.(undefined, true);
       navigate('/');
     },
     resetPassword: (email: string) => {

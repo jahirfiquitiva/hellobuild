@@ -62,7 +62,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     });
 
   useEffect(() => {
-    refetch?.();
+    if (githubToken) refetch?.();
   }, [githubToken, refetch]);
 
   const renderRepositoriesContent = () => {
@@ -115,7 +115,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   if (authLoading || loadingGitHubToken) return null;
   if (!loadingGitHubToken && !githubToken) return null;
   return (
-    <>
+    <section id={isFavoritesList ? 'favorites' : 'repositories'}>
       <h2>
         {isFavoritesList
           ? `Favorites ${
@@ -151,6 +151,6 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
         </small>
       )}
       {renderRepositoriesContent()}
-    </>
+    </section>
   );
 };

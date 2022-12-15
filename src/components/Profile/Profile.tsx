@@ -33,13 +33,12 @@ export const Profile: FC<ProfileProps> = (props) => {
   const { viewer } = data || {};
 
   useEffect(() => {
-    refetch?.();
+    if (githubToken) refetch?.();
   }, [githubToken, refetch]);
 
   if (authLoading || loadingGitHubToken) return null;
   return (
     <>
-      {!infoOnly && <h1>Profile</h1>}
       {loading && !viewer && (
         <Loading useLine text={'Loading profile details…'} />
       )}
@@ -60,6 +59,7 @@ export const Profile: FC<ProfileProps> = (props) => {
         </>
       ) : viewer ? (
         <ProfileSection id={'profile'}>
+          {!infoOnly && <h1>Profile</h1>}
           <PhotoAndInfo>
             <Photo
               src={

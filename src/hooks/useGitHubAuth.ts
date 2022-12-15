@@ -15,6 +15,7 @@ interface TokenResponse {
 interface HookReturnType {
   loading?: boolean;
   token?: string | null;
+  storeGitHubToken?: (token?: string, force?: boolean) => void;
 }
 
 export const useGitHubAuth = (
@@ -29,13 +30,18 @@ export const useGitHubAuth = (
     return sessionStorage.getItem('gh_token');
   });
 
+  const storeGitHubToken = (token?: string, force?: boolean) => {
+    if (!token && !force) return;
+    if (token) sessionStorage.setItem('gh_token', token);
+    else sessionStorage.removeItem('gh_token');
+    setGitHubAccessToken(token);
+  };
+
   useEffect(() => {
     if (!latestUserGitHubToken) return;
     const currentToken = sessionStorage.getItem('gh_token');
-    if (currentToken !== latestUserGitHubToken) {
-      sessionStorage.setItem('gh_token', latestUserGitHubToken);
-      setGitHubAccessToken(latestUserGitHubToken);
-    }
+    if (currentToken !== latestUserGitHubToken)
+      storeGitHubToken(latestUserGitHubToken);
   }, [latestUserGitHubToken]);
 
   useEffect(() => {
@@ -52,8 +58,7 @@ export const useGitHubAuth = (
         const { token } = response;
         const { access_token: responseToken } = token || {};
         if (responseToken && responseToken !== 'undefined') {
-          sessionStorage.setItem('gh_token', responseToken || '');
-          setGitHubAccessToken(responseToken || null);
+          storeGitHubToken(responseToken, true);
         }
         setLoading(false);
       })
@@ -63,5 +68,5 @@ export const useGitHubAuth = (
       });
   }, [code, ghAccessToken]);
 
-  return { token: ghAccessToken, loading };
+  return { token: ghAccessToken, loading, storeGitHubToken };
 };

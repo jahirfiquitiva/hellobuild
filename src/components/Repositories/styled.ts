@@ -1,7 +1,7 @@
 import { Search } from 'lucide-react';
 import { styled } from '~/stitches';
 
-export const RepositoriesGrid = styled('section', {
+export const RepositoriesGrid = styled('div', {
   display: 'grid',
   gridTemplateColumns: '1fr',
   gap: '1rem',
@@ -13,7 +13,7 @@ export const RepositoriesGrid = styled('section', {
 export const RepositoriesSearchContainer = styled('div', {
   position: 'relative',
   width: '100%',
-  marginTop: '1rem',
+  marginY: '1rem',
 });
 
 export const RepositoriesSearchLabel = styled('label', {
