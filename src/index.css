@@ -74,6 +74,31 @@ section {
   outline-color: var(--nc-ac-1);
 }
 
+.toast-container {
+  inset: 0 !important;
+  transition: all 0.15s ease-in-out;
+}
+
+.toast-container > div:first-child {
+  margin-top: 2rem;
+}
+
+.toast-container:has(div) {
+  background-image: linear-gradient(
+    to bottom,
+    rgba(0 0 0 / 0.012),
+    rgba(0 0 0 / 0)
+  );
+}
+
+.toast {
+  --shadow-color: 136 136 136;
+  border: 1px solid var(--nc-ac-1);
+  background-color: var(--nc-ac-tx);
+  color: var(--nc-bg-1);
+  font-weight: 500;
+}
+
 @media screen and (min-width: 540px) {
   body {
     padding: 2rem;
@@ -82,9 +107,42 @@ section {
   }
 }
 
+@media screen and (min-height: 540px) {
+  .toast-container > div:first-child {
+    margin-top: 4rem;
+  }
+}
+
+@media screen and (min-height: 960px) {
+  .toast-container > div:first-child {
+    margin-top: 6rem;
+  }
+}
+
+@media screen and (min-height: 1440px) {
+  .toast-container > div:first-child {
+    margin-top: 8rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   :root {
     --nc-err: #f1768c;
     --nc-err-2: #ef627b;
+    --nc-ac-tx: #faf6fd;
+  }
+
+  .toast-container:has(div) {
+    background-image: linear-gradient(
+      to bottom,
+      rgba(255 255 255 / 0.012),
+      rgba(255 255 255 / 0)
+    );
+  }
+
+  .toast {
+    --shadow-color: 255 255 255;
+    box-shadow: 0 3px 10px rgba(var(--shadow-color) / 0.24),
+      0 3px 3px rgba(var(--shadow-color) / 0.12);
   }
 }

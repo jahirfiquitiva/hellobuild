@@ -28,7 +28,7 @@ function App() {
   return (
     <ApolloProvider client={apolloClient}>
       <RouterProvider router={router} />
-      <Toaster />
+      <Toaster containerClassName={'toast-container'} />
     </ApolloProvider>
   );
 }
