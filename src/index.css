@@ -1,3 +1,6 @@
+@import url('https://fonts.xz.style/serve/inter.css');
+@import url('https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css');
+
 :root {
   font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   font-synthesis: none;
@@ -5,8 +8,74 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
-
   --nc-err: #d43551;
+}
+
+:root {
+  --doc-height: calc(100% - 2rem);
+}
+
+* {
+  text-underline-offset: 4px;
+}
+
+html,
+body {
+  scroll-behavior: smooth;
+  font-size: 100%;
+  height: var(--doc-height);
+}
+
+html {
+  height: stretch;
+}
+
+body {
+  font-size: 1rem;
+  min-height: stretch;
+  min-height: 100%;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: 0;
+}
+
+#root,
+#__next {
+  min-height: stretch;
+  min-height: 100%;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+}
+
+button {
+  transition: all 0.15s ease-in-out;
+  min-height: 42px;
+}
+
+section {
+  padding-top: 1.5rem;
+  padding-bottom: 1.5rem;
+}
+
+.truncate,
+.truncate * {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+*:focus {
+  outline: 2px solid var(--nc-ac-1);
+  outline-offset: 0.1rem;
+}
+
+@media screen and (min-width: 540px) {
+  body {
+    font-size: 1.025rem;
+  }
 }
 
 @media (prefers-color-scheme: dark) {

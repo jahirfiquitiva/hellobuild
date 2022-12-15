@@ -6,7 +6,6 @@ import { ReposPage, FavoritesPage, NotFoundPage } from '@/pages';
 import { withLayout } from '@/components/Layout';
 import { apolloClient } from '@/lib/apollo';
 
-import '@/styles/global.scss';
 import { Auth } from './components/Auth';
 
 const router = createBrowserRouter([
