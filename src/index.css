@@ -75,7 +75,7 @@ section {
 }
 
 .toast-container {
-  inset: 2rem !important;
+  inset: 2rem 1rem !important;
   transition: all 0.15s ease-in-out;
 }
 
@@ -104,19 +104,19 @@ section {
 
 @media screen and (min-height: 540px) {
   .toast-container {
-    inset: 4rem !important;
+    inset: 4rem 1.5rem !important;
   }
 }
 
 @media screen and (min-height: 960px) {
   .toast-container {
-    inset: 6rem !important;
+    inset: 6rem 2rem !important;
   }
 }
 
 @media screen and (min-height: 1440px) {
   .toast-container {
-    inset: 8rem !important;
+    inset: 8rem 2rem !important;
   }
 }
 
