@@ -1,10 +1,22 @@
 import { Tabs } from '@/components/Tabs';
+import { useAuth } from '@/providers';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { PasswordReset } from './PasswordReset';
 
 import { SignIn } from './SignIn';
 import { SignUp } from './SignUp';
 
 export const Auth = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.uid) navigate('/profile');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?.uid]);
+
+  if (loading) return null;
   return (
     <Tabs
       tabsCount={3}

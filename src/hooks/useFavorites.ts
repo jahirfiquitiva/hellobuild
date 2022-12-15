@@ -9,14 +9,21 @@ export interface Favorite {
   repoName: string;
 }
 
-export const useFavorites = (userId?: string): Array<Favorite> => {
+interface FavoritesHookResult {
+  favorites: Array<Favorite>;
+  loading: boolean;
+}
+
+export const useFavorites = (): FavoritesHookResult => {
   const { user } = useAuth();
-  const [collectionSnapshot] = useCollection(
+  const [collectionSnapshot, loading] = useCollection(
     collection(db, 'users', user?.uid || 'x', 'favorites'),
   );
-  return (
-    collectionSnapshot?.docs.map((doc) => {
-      return { ...doc.data(), id: doc.id } as Favorite;
-    }) || []
-  );
+  return {
+    loading,
+    favorites:
+      collectionSnapshot?.docs.map((doc) => {
+        return { ...doc.data(), id: doc.id } as Favorite;
+      }) || [],
+  };
 };

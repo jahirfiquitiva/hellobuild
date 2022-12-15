@@ -58,7 +58,6 @@ export const useGitHubAuth = (
         setLoading(false);
       })
       .catch((error) => {
-        console.error(error);
         toast.error(error.message, toastConfig);
         setLoading(false);
       });

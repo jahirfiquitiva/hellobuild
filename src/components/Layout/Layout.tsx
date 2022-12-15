@@ -17,6 +17,14 @@ import { withAuth } from '@/components/Auth';
 import { useAuth } from '@/providers';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
 import { getUserPhotoUrl } from '@/utils/user-photo';
+import type { UserData } from '@/hooks/useFirestoreUser';
+
+const getUserFullName = (user?: UserData | null): string => {
+  let fullName = '';
+  if (user?.firstName) fullName += user?.firstName;
+  if (user?.lastName) fullName += ` ${user?.lastName}`;
+  return fullName || '…';
+};
 
 export const Layout: FC = (props) => {
   const { children } = props;
@@ -42,9 +50,7 @@ export const Layout: FC = (props) => {
                 }
                 alt={'User avatar'}
               />
-              <span>
-                {user?.firstName} {user?.lastName}
-              </span>
+              <span>{githubUser?.viewer?.name || getUserFullName(user)}</span>
             </ProfilePill>
           ) : (
             <div>

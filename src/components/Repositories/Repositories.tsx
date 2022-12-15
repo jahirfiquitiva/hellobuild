@@ -35,7 +35,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     user?.githubToken,
   );
 
-  const favorites = useFavorites();
+  const { favorites, loading: loadingFavorites } = useFavorites();
 
   const { loading, data, refetch } =
     useQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
@@ -66,31 +66,67 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
     refetch?.();
   }, [githubToken, refetch]);
 
-  if (authLoading || loadingGitHubToken) return null;
-  if ((!repositories || !repositories.length) && !stillLoading) {
-    if (isFavoritesList) {
-      return (
-        <>
-          <h2>Favorites</h2>
+  const renderRepositoriesContent = () => {
+    if (stillLoading) return null;
+    if (!repositories || !repositories.length) {
+      if (isFavoritesList && !loadingFavorites) {
+        return (
           <p>
             You haven&apos;t added any favorites yet. Go back to{' '}
             <Link to={'/profile'}>your profile</Link> to do so.
           </p>
-        </>
-      );
+        );
+      }
+      return null;
     }
-    return null;
-  }
+    return (
+      <>
+        <RepositoriesSearchContainer>
+          <RepositoriesSearchLabel htmlFor={'search'}>
+            Search repository
+          </RepositoriesSearchLabel>
+          <RepositoriesSearch
+            id={'search'}
+            name={'Search repository'}
+            placeholder={'Search repository'}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+          <RepositoriesSearchIcon />
+        </RepositoriesSearchContainer>
+        <RepositoriesGrid>
+          {repositories.map((repo) => {
+            return (
+              <Repository
+                key={repo?.nameWithOwner || repo?.name}
+                username={viewer?.login || ''}
+                repositoryData={repo}
+                favoriteId={
+                  favorites.find((fav) => fav.repoName === repo?.nameWithOwner)
+                    ?.id
+                }
+              />
+            );
+          })}
+        </RepositoriesGrid>
+      </>
+    );
+  };
+
+  if (authLoading || loadingGitHubToken) return null;
+  if (!loadingGitHubToken && !githubToken) return null;
   return (
     <>
       <h2>
         {isFavoritesList
-          ? `Favorites ${stillLoading ? '' : `(${favorites.length})`}`.trim()
+          ? `Favorites ${
+              loadingFavorites ? '' : `(${favorites.length})`
+            }`.trim()
           : `Repositories ${
               stillLoading ? '' : `(${viewer?.repositories?.totalCount || 0})`
             }`.trim()}
       </h2>
-      {stillLoading && (
+      {(stillLoading || (isFavoritesList && loadingFavorites)) && (
         <Loading
           useLine
           text={`Loading ${
@@ -115,39 +151,7 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
           . Impressive! 🎉
         </small>
       )}
-      {!stillLoading && (
-        <>
-          <RepositoriesSearchContainer>
-            <RepositoriesSearchLabel htmlFor={'search'}>
-              Search repository
-            </RepositoriesSearchLabel>
-            <RepositoriesSearch
-              id={'search'}
-              name={'Search repository'}
-              placeholder={'Search repository'}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <RepositoriesSearchIcon />
-          </RepositoriesSearchContainer>
-          <RepositoriesGrid>
-            {repositories.map((repo) => {
-              return (
-                <Repository
-                  key={repo?.nameWithOwner || repo?.name}
-                  username={viewer?.login || ''}
-                  repositoryData={repo}
-                  favoriteId={
-                    favorites.find(
-                      (fav) => fav.repoName === repo?.nameWithOwner,
-                    )?.id
-                  }
-                />
-              );
-            })}
-          </RepositoriesGrid>
-        </>
-      )}
+      {renderRepositoriesContent()}
     </>
   );
 };

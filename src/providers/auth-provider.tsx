@@ -51,7 +51,7 @@ export const AuthProvider: FC = (props) => {
   );
 
   useEffect(() => {
-    setUserGitHubToken(userId || '', githubToken).catch();
+    if (userId) setUserGitHubToken(userId || '', githubToken).catch();
   }, [userId, githubToken]);
 
   useEffect(() => {
@@ -96,8 +96,9 @@ export const AuthProvider: FC = (props) => {
       );
     },
     signOut: () => {
-      sessionStorage.setItem('gh_token', '');
       signOut(auth);
+      setUserId(undefined);
+      sessionStorage.setItem('gh_token', '');
       navigate('/');
     },
     resetPassword: (email: string) => {
