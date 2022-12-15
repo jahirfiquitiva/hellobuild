@@ -117,7 +117,7 @@ export const Profile: FC<ProfileProps> = (props) => {
             </FollowersFollowing>
           </ProfileInfo>
         </>
-      ) : !loading ? (
+      ) : !((!user || loading) && !viewer) ? (
         renderProfileError()
       ) : null}
     </ProfileSection>
