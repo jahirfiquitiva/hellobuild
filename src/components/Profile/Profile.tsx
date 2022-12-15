@@ -28,9 +28,34 @@ export const Profile: FC<ProfileProps> = (props) => {
     useGitHubQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
 
+  const renderProfileError = () => {
+    return (
+      <>
+        <p>
+          In order to retrieve your profile data and repositories list, you must
+          connect your GitHub account.
+        </p>
+        <ConnectGitHub
+          href={`https://github.com/login/oauth/authorize?client_id=Iv1.8aae692ae0ec6ccf&redirect_uri=${encodeURI(
+            `${window?.location?.origin || ''}?authorized=true`,
+          )}`}
+          css={infoOnly ? {} : { marginTop: '-2rem' }}
+        >
+          <Github />
+          <span>Connect to GitHub</span>
+        </ConnectGitHub>
+      </>
+    );
+  };
+
+  if (infoOnly) {
+    if (!viewer && !loading) return renderProfileError();
+    return null;
+  }
+
   return (
     <ProfileSection id={'profile'}>
-      {!infoOnly && <h1>Profile</h1>}
+      <h1>Profile</h1>
       {loading && !viewer && (
         <Loading useLine text={'Loading profile details…'} />
       )}
@@ -93,20 +118,7 @@ export const Profile: FC<ProfileProps> = (props) => {
           </ProfileInfo>
         </>
       ) : !loading ? (
-        <>
-          <p>
-            In order to retrieve your profile data and repositories list, you
-            must connect your GitHub account.
-          </p>
-          <ConnectGitHub
-            href={`https://github.com/login/oauth/authorize?client_id=Iv1.8aae692ae0ec6ccf&redirect_uri=${encodeURI(
-              `${window?.location?.origin || ''}?authorized=true`,
-            )}`}
-          >
-            <Github />
-            <span>Connect to GitHub</span>
-          </ConnectGitHub>
-        </>
+        renderProfileError()
       ) : null}
     </ProfileSection>
   );
