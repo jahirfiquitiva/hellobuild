@@ -79,23 +79,15 @@ section {
   transition: all 0.15s ease-in-out;
 }
 
-.toast-container:has(div) {
-  background-image: linear-gradient(
-    to bottom,
-    rgba(0 0 0 / 0.012),
-    rgba(0 0 0 / 0)
-  );
-}
-
 .toast {
   --shadow-color: 136 136 136;
-  border: 1px solid var(--nc-ac-1);
-  background-color: var(--nc-ac-tx);
-  color: var(--nc-bg-1);
   font-weight: 500;
-  padding-left: 24px;
   gap: 0.5rem;
-  max-width: 364px;
+  border: 1px solid var(--nc-ac-1);
+  background-color: var(--nc-ac-tx) !important;
+  color: var(--nc-bg-1) !important;
+  padding-left: 24px !important;
+  max-width: 364px !important;
 }
 
 .toast > div:firstchild {
@@ -133,14 +125,6 @@ section {
     --nc-err: #f1768c;
     --nc-err-2: #ef627b;
     --nc-ac-tx: #faf6fd;
-  }
-
-  .toast-container:has(div) {
-    background-image: linear-gradient(
-      to bottom,
-      rgba(255 255 255 / 0.012),
-      rgba(255 255 255 / 0)
-    );
   }
 
   .toast {
