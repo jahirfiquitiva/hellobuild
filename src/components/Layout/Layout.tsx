@@ -3,7 +3,6 @@ import type { FC, ReactNode } from 'react';
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
 import {
   Footer,
-  Header,
   Main,
   Navigation,
   NavLink,
