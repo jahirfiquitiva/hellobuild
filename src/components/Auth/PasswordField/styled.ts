@@ -4,7 +4,9 @@ export const InputAndButton = styled('div', {
   display: 'flex',
   alignItems: 'center',
   gap: '.25rem',
+  maxWidth: '100%',
   '& > input': {
+    minWidth: 0,
     flex: 1,
     fontFamily: 'monospace'
   },

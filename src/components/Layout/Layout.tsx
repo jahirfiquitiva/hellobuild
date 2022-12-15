@@ -54,7 +54,7 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
               <span>{githubUser?.viewer?.name || getUserFullName(user)}</span>
             </ProfilePill>
           ) : (
-            <div>
+            <div style={{ width: 'calc(100% - 1rem)' }}>
               <h1>HelloBuild Exercise</h1>
               <small>
                 by{' '}

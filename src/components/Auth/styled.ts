@@ -23,6 +23,7 @@ export const FormField = styled('div', {
   display: 'flex',
   flexDirection: 'column',
   width: '100%',
+  maxWidth: '100%',
   flex: 1,
   gap: '.35rem',
   '& input': {

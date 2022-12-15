@@ -13,6 +13,7 @@ export const TabList = styled('div', {
   borderBottomWidth: 0,
   borderTopLeftRadius: '.5rem',
   borderTopRightRadius: '.5rem',
+  overflowX: 'auto',
   '& > *:first-child': {
     borderTopLeftRadius: '.5rem',
   },

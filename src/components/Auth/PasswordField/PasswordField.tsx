@@ -31,7 +31,11 @@ export const PasswordField: FC<PasswordFieldProps> = (props) => {
             setPasswordVisible(!passwordVisible);
           }}
         >
-          {passwordVisible ? <EyeOff /> : <Eye />}
+          {passwordVisible ? (
+            <EyeOff color={'var(--nc-tx-2)'} />
+          ) : (
+            <Eye color={'var(--nc-tx-2)'} />
+          )}
         </button>
       </InputAndButton>
       {children}

@@ -27,6 +27,8 @@ export const NavLinksGroup = styled('ul', {
   gap: '1rem',
   listStyle: 'none',
   margin: 0,
+  paddingLeft: 0,
+  alignSelf: 'flex-start',
   '& > li': {
     display: 'flex',
     margin: 0,

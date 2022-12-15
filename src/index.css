@@ -36,6 +36,7 @@ body {
   min-height: stretch;
   min-height: 100%;
   -webkit-font-smoothing: antialiased;
+  padding: 1rem;
   padding-bottom: 0;
 }
 
@@ -76,6 +77,8 @@ section {
 
 @media screen and (min-width: 540px) {
   body {
+    padding: 2rem;
+    padding-bottom: 0;
     font-size: 1.025rem;
   }
 }
