@@ -6,7 +6,6 @@ import { Form, FormField, FieldError } from '../styled';
 import { useAuth } from '@/providers';
 import { toastConfig } from '@/utils/toast';
 import { authErrorToMessage } from '@/utils/auth-error';
-import { createUserInStore } from '@/utils/firestore-operations';
 
 interface SignInFormData {
   email: string;
