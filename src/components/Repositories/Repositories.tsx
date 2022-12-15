@@ -18,7 +18,6 @@ import {
   RepositoriesSearchLabel,
 } from './styled';
 import { useGitHubQuery } from '@/hooks/useGitHubQuery';
-import { useAuth } from '@/providers';
 
 interface RepositoriesProps {
   isFavoritesList?: boolean;
@@ -29,16 +28,10 @@ export const Repositories: FC<RepositoriesProps> = (props) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const { favorites, loading: loadingFavorites } = useFavorites();
 
-  const { user } = useAuth();
-  const {
-    loading,
-    data,
-    token: githubToken,
-  } = useGitHubQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
+  const { loading, data } =
+    useGitHubQuery<RepositoriesQueryResult>(GET_REPOS_QUERY);
   const { viewer } = data || {};
   const stillLoading: boolean = loading && !viewer;
-  const hasGitHubToken: boolean =
-    Boolean(user?.githubToken) || Boolean(githubToken);
 
   const repositories: Array<RepositoryData> = (
     viewer?.repositories?.edges?.map((item) => ({
