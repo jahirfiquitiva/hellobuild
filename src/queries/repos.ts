@@ -36,6 +36,8 @@ export const GET_REPOS_QUERY = gql`
       repositories(
         first: 100
         orderBy: { field: UPDATED_AT, direction: DESC }
+        affiliations: OWNER
+        ownerAffiliations: OWNER
       ) {
         totalCount
         edges {
