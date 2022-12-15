@@ -71,8 +71,7 @@ section {
 }
 
 *:focus {
-  outline: 2px solid var(--nc-ac-1);
-  outline-offset: 0.1rem;
+  outline-color: var(--nc-ac-1);
 }
 
 @media screen and (min-width: 540px) {
