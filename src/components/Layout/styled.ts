@@ -8,7 +8,13 @@ export const Main = styled('main', {
   flex: 1,
 });
 
-export const Header = styled('header', {});
+export const Title = styled('div', {
+  width: 'calc(100% - 1rem)',
+  '@tablet': {
+    width: 'unset',
+    flex: 1,
+  },
+});
 
 export const Navigation = styled('nav', {
   display: 'flex',
@@ -29,6 +35,9 @@ export const NavLinksGroup = styled('ul', {
   margin: 0,
   paddingLeft: 0,
   alignSelf: 'flex-start',
+  '@tablet': {
+    alignSelf: 'center',
+  },
   '& > li': {
     display: 'flex',
     margin: 0,

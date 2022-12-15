@@ -11,6 +11,7 @@ import {
   ProfilePhoto,
   ProfilePill,
   SignOutButton,
+  Title,
 } from './styled';
 import { withAuth } from '@/components/Auth';
 import { useAuth } from '@/providers';
@@ -36,7 +37,7 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
 
   return (
     <>
-      <Header>
+      <header>
         <Navigation>
           {uid ? (
             <ProfilePill to={'/profile'}>
@@ -54,7 +55,7 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
               <span>{githubUser?.viewer?.name || getUserFullName(user)}</span>
             </ProfilePill>
           ) : (
-            <div style={{ width: 'calc(100% - 1rem)' }}>
+            <Title>
               <h1>HelloBuild Exercise</h1>
               <small>
                 by{' '}
@@ -66,7 +67,7 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
                   Jahir Fiquitiva
                 </a>
               </small>
-            </div>
+            </Title>
           )}
           <NavLinksGroup>
             {uid ? (
@@ -96,7 +97,7 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
             )}
           </NavLinksGroup>
         </Navigation>
-      </Header>
+      </header>
       <Main>{children}</Main>
       <Footer>
         <p>
