@@ -1,29 +1,44 @@
 import type { FC, ComponentChild } from '@/types/fc';
 import { Link } from 'react-router-dom';
 
-import { Footer, Header, Main, Navigation } from './styled';
+import {
+  Footer,
+  Header,
+  Main,
+  Navigation,
+  ProfilePhoto,
+  ProfilePill,
+} from './styled';
 import { withAuth } from '@/components/Auth';
 import { useAuth } from '@/providers';
+import { useGitHubAuth } from '@/hooks/useGitHubAuth';
 
 export const Layout: FC = (props) => {
   const { children } = props;
   const { user, signOut } = useAuth();
   const { uid } = user || {};
+  const { token: githubToken } = useGitHubAuth(user?.githubToken);
   return (
     <>
       <Header>
         <Navigation>
           {uid ? (
-            <div>
-              <img
+            <ProfilePill to={'/profile'}>
+              <ProfilePhoto
                 src={`https://unavatar.io/${user?.email}`}
-                width={48}
-                height={48}
-                alt={'User profile'}
+                alt={'User avatar'}
               />
-            </div>
+              <span>
+                {user?.firstName} {user?.lastName}
+              </span>
+            </ProfilePill>
           ) : (
-            <h1>HelloBuild</h1>
+            <div>
+              <h1>HelloBuild Exercise</h1>
+              <small>
+                by <a href={'https://jahir.dev'}>Jahir Fiquitiva</a>
+              </small>
+            </div>
           )}
           <ul>
             {uid ? (
@@ -31,9 +46,11 @@ export const Layout: FC = (props) => {
                 <li>
                   <Link to={'/profile'}>Profile</Link>
                 </li>
-                <li>
-                  <Link to={'/favorites'}>Favorites</Link>
-                </li>
+                {Boolean(githubToken) && (
+                  <li>
+                    <Link to={'/favorites'}>Favorites</Link>
+                  </li>
+                )}
                 <li>
                   <button
                     onClick={() => {

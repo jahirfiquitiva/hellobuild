@@ -16,9 +16,14 @@ import {
 import { useAuth } from '@/providers';
 import { getUserPhotoUrl } from '@/utils/user-photo';
 import { useGitHubAuth } from '@/hooks/useGitHubAuth';
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
-export const Profile = () => {
+interface ProfileProps {
+  infoOnly?: boolean;
+}
+
+export const Profile: FC<ProfileProps> = (props) => {
+  const { infoOnly } = props;
   const { user } = useAuth();
   const { token: githubToken } = useGitHubAuth(user?.githubToken);
   const { loading, error, data, refetch } =
@@ -32,7 +37,7 @@ export const Profile = () => {
   if (loading) return <Loading />;
   return (
     <>
-      <h1>Profile</h1>
+      {!infoOnly && <h1>Profile</h1>}
       {(error || !viewer) && !loading ? (
         <>
           <p>
