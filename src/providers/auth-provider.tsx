@@ -13,16 +13,12 @@ import {
   type UserCredential,
   sendPasswordResetEmail,
 } from 'firebase/auth';
+import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 import { auth } from '@/lib/firebase';
-import { useNavigate } from 'react-router-dom';
 import { Loading } from '@/components/Loading';
-import toast from 'react-hot-toast';
-import { useGitHubAuth } from '@/hooks/useGitHubAuth';
-import {
-  createUserInStore,
-  setUserGitHubToken,
-} from '@/utils/firestore-operations';
+import { createUserInStore } from '@/utils/firestore-operations';
 import { useFirestoreUser, type UserData } from '@/hooks/useFirestoreUser';
 import { toastConfig } from '@/utils/toast';
 
@@ -49,24 +45,10 @@ const AuthContext = createContext<AuthProviderFields>({});
 export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   props,
 ) => {
-  const { children } = props;
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(true);
   const [userId, setUserId] = useState<string | undefined>(undefined);
   const userData = useFirestoreUser(userId);
-  const {
-    token: githubToken,
-    loading: githubTokenLoading,
-    storeGitHubToken,
-  } = useGitHubAuth(userData?.githubToken);
-
-  useEffect(() => {
-    if (userData?.githubToken) {
-        storeGitHubToken?.(userData?.githubToken);
-      } else {
-        setUserGitHubToken(userId || '', githubToken).catch();
-      }
-  }, [userId, githubToken, userData, storeGitHubToken]);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((userAuth) => {
@@ -76,7 +58,7 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
         setUserId(userAuth.uid);
         createUserInStore(userAuth.uid, userAuth.email || '');
         const { pathname } = window.location;
-        if (!githubTokenLoading) navigate(pathname || '/profile');
+        navigate(pathname || '/profile');
       } else {
         setUserId(undefined);
         const { pathname } = window.location;
@@ -92,7 +74,7 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
     });
     return unsubscribe;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [githubTokenLoading]);
+  }, []);
 
   const value: AuthProviderFields = {
     signUp: (accountInfo: AccountInfo) => {
@@ -112,7 +94,7 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
     signOut: () => {
       signOut(auth);
       setUserId(undefined);
-      storeGitHubToken?.(undefined, true);
+      sessionStorage.removeItem('gh_token');
       navigate('/');
     },
     resetPassword: (email: string) => {
@@ -123,7 +105,9 @@ export const AuthProvider: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   };
 
   if (loading) return <Loading />;
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>{props.children}</AuthContext.Provider>
+  );
 };
 
 export const useAuth = (): AuthProviderFields => {

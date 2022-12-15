@@ -1,4 +1,4 @@
-import type { FC, ReactNode } from 'react';
+import { FC, ReactNode, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
@@ -13,8 +13,7 @@ import {
   ProfilePill,
 } from './styled';
 import { withAuth } from '@/components/Auth';
-import { useAuth } from '@/providers';
-import { useGitHubAuth } from '@/hooks/useGitHubAuth';
+import { useAuth, useGitHub } from '@/providers';
 import { getUserPhotoUrl } from '@/utils/user-photo';
 import type { UserData } from '@/hooks/useFirestoreUser';
 
@@ -31,9 +30,14 @@ export const Layout: FC<{ children?: ReactNode | ReactNode[] | null }> = (
   const { children } = props;
   const { user, signOut } = useAuth();
   const { uid } = user || {};
-  const { token: githubToken } = useGitHubAuth(user?.githubToken);
-  const { data: githubUser } =
+  const { token: githubToken } = useGitHub();
+  const { data: githubUser, refetch } =
     useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
+
+  useEffect(() => {
+    if (githubToken) refetch?.();
+  }, [githubToken, refetch]);
+
   return (
     <>
       <Header>

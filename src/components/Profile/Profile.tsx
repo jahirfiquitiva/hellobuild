@@ -1,7 +1,10 @@
+import { type FC, useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { AtSign, Github, Globe, Users } from 'lucide-react';
 
+import { useAuth, useGitHub } from '@/providers';
 import { GET_USER_INFO_QUERY, type UserInfoQueryResult } from '@/queries/user';
+import { getUserPhotoUrl } from '@/utils/user-photo';
 import { Loading } from '../Loading';
 import {
   ConnectGitHub,
@@ -13,10 +16,6 @@ import {
   ProfileInfo,
   ProfileSection,
 } from './styled';
-import { useAuth } from '@/providers';
-import { getUserPhotoUrl } from '@/utils/user-photo';
-import { useGitHubAuth } from '@/hooks/useGitHubAuth';
-import { FC, useEffect } from 'react';
 
 interface ProfileProps {
   infoOnly?: boolean;
@@ -24,10 +23,8 @@ interface ProfileProps {
 
 export const Profile: FC<ProfileProps> = (props) => {
   const { infoOnly } = props;
-  const { user, loading: authLoading } = useAuth();
-  const { token: githubToken, loading: loadingGitHubToken } = useGitHubAuth(
-    user?.githubToken,
-  );
+  const { user } = useAuth();
+  const { token: githubToken, loading: loadingAuth } = useGitHub();
   const { loading, error, data, refetch } =
     useQuery<UserInfoQueryResult>(GET_USER_INFO_QUERY);
   const { viewer } = data || {};
@@ -36,7 +33,7 @@ export const Profile: FC<ProfileProps> = (props) => {
     if (githubToken) refetch?.();
   }, [githubToken, refetch]);
 
-  if (authLoading || loadingGitHubToken) return null;
+  if (loadingAuth) return null;
   return (
     <>
       {loading && !viewer && (
