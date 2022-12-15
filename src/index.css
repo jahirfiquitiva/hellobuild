@@ -75,12 +75,8 @@ section {
 }
 
 .toast-container {
-  inset: 0 !important;
+  inset: 2rem !important;
   transition: all 0.15s ease-in-out;
-}
-
-.toast-container > div:first-child {
-  margin-top: 2rem;
 }
 
 .toast-container:has(div) {
@@ -97,6 +93,13 @@ section {
   background-color: var(--nc-ac-tx);
   color: var(--nc-bg-1);
   font-weight: 500;
+  padding-left: 24px;
+  gap: 0.5rem;
+  max-width: 364px;
+}
+
+.toast > div:firstchild {
+  font-size: 1.35rem;
 }
 
 @media screen and (min-width: 540px) {
@@ -108,20 +111,20 @@ section {
 }
 
 @media screen and (min-height: 540px) {
-  .toast-container > div:first-child {
-    margin-top: 4rem;
+  .toast-container {
+    inset: 4rem !important;
   }
 }
 
 @media screen and (min-height: 960px) {
-  .toast-container > div:first-child {
-    margin-top: 6rem;
+  .toast-container {
+    inset: 6rem !important;
   }
 }
 
 @media screen and (min-height: 1440px) {
-  .toast-container > div:first-child {
-    margin-top: 8rem;
+  .toast-container {
+    inset: 8rem !important;
   }
 }
 
